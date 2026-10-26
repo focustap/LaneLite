@@ -32,6 +32,12 @@ jobs:
         run: cargo test --manifest-path src-tauri/Cargo.toml
       - name: Build Windows executable and installer
         run: npm run desktop:build -- --bundles nsis
+      - name: Verify upgrade from released LaneLite 0.4.1
+        shell: pwsh
+        run: |
+          $version = (Get-Content package.json | ConvertFrom-Json).version
+          $installer = (Get-ChildItem src-tauri/target/release/bundle/nsis/*-setup.exe | Select-Object -First 1).FullName
+          ./tools/verify-windows-upgrade.ps1 -Installer $installer -ExpectedVersion $version
       - name: Stage downloads
         shell: pwsh
         run: |
@@ -52,7 +58,7 @@ jobs:
           $tag = "v$version"
           gh release view $tag *> $null
           if ($LASTEXITCODE -ne 0) {
-            gh release create $tag --target "${{ github.sha }}" --title "LaneLite $version" --notes "Quiet Windows companion. Download the setup executable to install, or LaneLite-Portable.exe to run directly. Microsoft Edge WebView2 Runtime is required for the portable version. Binaries are unsigned."
+            gh release create $tag --target "${{ github.sha }}" --title "LaneLite $version" --notes "Includes three selectable OP.GG item paths. Close LaneLite and run the setup executable to upgrade your installed copy. Windows CI verifies an upgrade from v0.4.1 keeps one app entry, the same install folder and existing app-data files. Portable users should replace their existing executable instead. Microsoft Edge WebView2 Runtime is required for the portable version. Binaries are unsigned."
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           }
           gh release upload $tag downloads/* --clobber

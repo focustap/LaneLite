@@ -25,6 +25,16 @@
 @media(max-width:540px){.item-slots{grid-template-columns:1fr}.build-head{align-items:start}.rune-grid{grid-template-columns:1fr}.build-panel{padding:16px}}
 .hero{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:24px}.hero h1{font-size:30px;margin:5px 0;letter-spacing:-1px}.hero p{font-size:12px}.main-content{padding-top:26px}.sidebar{padding-top:21px}.connection{margin-bottom:22px}.logo-row{margin-bottom:20px}.statistics-panel{margin-bottom:16px}.statistics-panel .panel-top{margin-bottom:12px}.stats-list-title{font-size:12px;color:#acb9c9;margin:20px 0 10px}.stat-overview{display:flex;gap:26px;flex-wrap:wrap;padding:8px 0 20px;border-bottom:1px solid #2a3440}.stat-overview>div{display:flex;flex-direction:column;gap:6px}.stat-overview span,.stat-overview small{font-size:11px;color:#8b9caa}.stat-overview strong{font-size:23px;font-weight:600;letter-spacing:-.7px}.stat-pair{width:100%;border:0;border-bottom:1px solid #27313b;background:transparent;color:#e7eaf2;display:flex;justify-content:space-between;align-items:center;text-align:left;padding:9px 7px;border-radius:6px}.stat-pair:hover{background:#1c2a32}.stat-pair>span:last-child{text-align:right}.stat-pair strong{font-size:12px;font-weight:600}.stat-pair small{display:block;color:#8f9eac;font-size:10px;margin-top:3px}.pair-name{display:flex;align-items:center;gap:9px}.champion-icon{width:29px;height:29px;border-radius:7px;object-fit:cover;flex-shrink:0;border:1px solid #3c4b53}.portrait-fallback{display:inline-grid;place-items:center;background:#20383a;color:#a5e7d8}.banner-icon{object-fit:cover}.source-links{display:flex;flex-wrap:wrap;gap:18px;margin-top:16px}.source-links a{color:#96d8cd;font-size:11px;text-decoration:none}.source-links a:hover{text-decoration:underline}.source-links a:focus-visible{outline:2px solid #84ded0;outline-offset:3px}.stats-table-wrap{overflow:auto}.stats-table{border-collapse:collapse;width:100%;font-size:12px}.stats-table th{font-size:10px;text-align:left;color:#8e9eaa;font-weight:500;padding:10px 6px;border-bottom:1px solid #33404c;white-space:nowrap}.stats-table td{padding:8px 6px;border-bottom:1px solid #293540;white-space:nowrap}.table-pick{background:none;border:0;color:#e4edf0;display:flex;align-items:center;gap:9px;text-align:left;padding:0}.draft-highlight{background:#1b3836!important}.reference-note{font-size:11px;line-height:1.7;color:#a1b2b5}.ally-strip{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.ally-chip{display:flex;align-items:center;gap:7px;font-size:11px;background:#152528;padding:6px 10px 6px 6px;border-radius:9px;border:1px solid #2c4644}.ally-chip .champion-icon{width:24px;height:24px}.synergy-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px 20px}.provider-slots{grid-template-columns:repeat(4,minmax(0,1fr))}.later-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:17px}.later-options strong{font-size:11px;color:#a3d3c7}.later-options p{font-size:11px}.later-options small{display:block;color:#90a0ad;margin-top:5px}.toggle-label{display:flex;gap:8px;align-items:center;font-size:12px!important}.toggle-label input{width:auto!important;accent-color:#8fd9c5}.personal-panel{margin:24px 0;background:#121c25;border:1px solid #293a44;border-radius:11px;padding:16px}.personal-panel summary{font-size:12px;cursor:pointer;color:#a9c1c4}.personal-pair{font-size:12px;display:flex;justify-content:space-between;gap:12px}.personal-pair span{color:#8caaa7;font-size:11px}button:disabled{opacity:.45;cursor:default}.statistics-panel .info-footnote{margin-top:12px}@media(max-width:950px){.hero{align-items:start;flex-direction:column;gap:5px}.provider-slots{grid-template-columns:repeat(2,minmax(0,1fr))}.synergy-grid{grid-template-columns:1fr}.stat-overview{gap:18px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 
+/* Compact, mutually exclusive live build paths. A path has item samples, not a joint win rate. */
+.build-choice-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:-3px 0 13px}
+.build-choice{display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-width:0;min-height:50px;padding:9px 11px;text-align:left;cursor:pointer;color:#b2c6ca;background:#121d26;border:1px solid #354550;border-radius:9px}
+.build-choice:hover{background:#203139;border-color:#4d8176}
+.build-choice.active{background:#203935;border-color:#8fd9c5;color:#e1f8ec}
+.build-choice:focus-visible{outline:2px solid #b4f3dc;outline-offset:2px}
+.build-choice strong{font-size:11px;line-height:1.3;overflow-wrap:anywhere}
+.build-choice small{font-size:10px;color:#92a8af;line-height:1.25}
+@media(max-width:900px){.build-choice{padding:8px 7px}.build-choice strong{font-size:10px}.build-choice small{font-size:9px}}
+
 </style>
 </head>
 <body>
@@ -49,7 +59,7 @@
       <div class="sidebar-footer"><div class="low-impact-icon">◌</div><div><strong>No background services.</strong><span>Polling stops when you close this window.</span></div></div>
     </aside>
     <main class="main">
-      <header class="topbar"><div class="topbar-title">DRAFT DESK <span class="slash">/</span> <span id="breadcrumb">Enemy team</span></div><div class="topbar-right"><span class="version">0.4.1</span><span class="separator"></span><span class="privacy-status">● Local LP history</span></div></header>
+      <header class="topbar"><div class="topbar-title">DRAFT DESK <span class="slash">/</span> <span id="breadcrumb">Enemy team</span></div><div class="topbar-right"><span class="version">0.4.3</span><span class="separator"></span><span class="privacy-status">● Local LP history</span></div></header>
       <div class="main-content">
         <div class="hero"><div><div class="eyebrow">QUIET BY DESIGN</div><h1>Your next game<span class="period">.</span></h1></div><p>Lock in. Check the draft. Play.</p></div>
         <nav class="tabs" aria-label="Companion views">
@@ -574,6 +584,48 @@ function normalizeAnalysis(raw) {
     patch:data.trends?.win?.version || null,countersMeta:data.counters_meta || null};
 }
 
+// The MCP analysis reports ONE popular three-item core, not three complete build
+// combinations. These are paths assembled from the most-played *fourth item*
+// alternatives and separately sampled later items. Never assign a full-path WR.
+function getProviderBuildPaths(analysis, maxPaths=3) {
+  const base=[];
+  const add=(target,names)=>{
+    for(const name of Array.isArray(names)?names:[]) {
+      if(typeof name==='string' && name.trim() && !target.includes(name) && target.length<6)target.push(name);
+    }
+  };
+  const core=analysis?.core?.items || [];
+  add(base,core.slice(0,1));
+  add(base,analysis?.boots?.items);
+  add(base,core.slice(1));
+  if(!base.length)return [];
+
+  const byGames=rows=>(Array.isArray(rows)?rows:[]).filter(r=>Array.isArray(r?.items))
+    .slice().sort((a,b)=>(b.games||0)-(a.games||0));
+  const seen=new Set(), paths=[];
+  for(const fourth of byGames(analysis.fourth)) {
+    const featured=fourth.items.find(n=>typeof n==='string' && !base.includes(n));
+    if(!featured || seen.has(featured) || base.length>=6)continue;
+    seen.add(featured);
+    const items=base.slice();
+    add(items,[featured]);
+    let fifth=null, sixth=null;
+    for(const row of byGames(analysis.fifth)) {
+      if(row.items.some(n=>typeof n==='string' && !items.includes(n))) {
+        fifth=row;add(items,row.items);break;
+      }
+    }
+    if(items.length<6)for(const row of byGames(analysis.sixth)) {
+      if(row.items.some(n=>typeof n==='string' && !items.includes(n))) {
+        sixth=row;add(items,row.items);break;
+      }
+    }
+    paths.push({items,fourth,fifth,sixth});
+    if(paths.length>=Math.min(3,Math.max(1,maxPaths)))break;
+  }
+  return paths.length?paths:[{items:base,fourth:null,fifth:null,sixth:null}];
+}
+
 function completeProviderBuild(analysis) {
   if(!analysis?.core?.items?.length)return [];
   const out=[];
@@ -617,6 +669,7 @@ const statsAttemptAt=new Map();
 let providerBusy=false;
 let providerError='';
 let providerKey='';
+const selectedBuildByKey=new Map();
 let personal={account:null,matches:[]};
 let personalMessage='Load your recent ranked games to see your own results with each ally.';
 let personalBusy=false;
@@ -702,11 +755,26 @@ function renderStatistics() {
   }));
 }
 function renderProviderBuild(a,champion) {
-  const rows=[...(a.core?.items || []),...(a.boots?.items || [])];
-  if(!rows.length)return null;
-  const card=name=>`<div class="build-slot"><div class="slot-icon">${itemIcon(name)}</div><div class="slot-meta"><strong>${esc(name)}</strong></div></div>`;
+  const paths=getProviderBuildPaths(a);
+  if(!paths.length)return null;
+  const active=Math.min(selectedBuildByKey.get(statsKey()) || 0,paths.length-1);
+  const path=paths[active];
+  const card=name=>'<div class="build-slot"><div class="slot-icon">'+itemIcon(name)+'</div><div class="slot-meta"><strong>'+esc(name)+'</strong></div></div>';
+  const choiceButtons=paths.length<2?'':'<div class="build-choice-tabs" role="group" aria-label="Choose a later-item path">'+paths.map((p,i)=>
+    '<button type="button" class="build-choice '+(active===i?'active':'')+'" data-build-path="'+i+'" aria-pressed="'+(active===i)+'"><strong>'+(i+1)+'. '+esc(p.fourth?.items?.[0] || 'Option')+'</strong><small>'+countFmt(p.fourth?.games)+' fourth-item games</small></button>'
+  ).join('')+'</div>';
   const options=[['4th item',a.fourth],['5th item',a.fifth],['6th item',a.sixth]];
-  return `<div class="build-panel"><div class="build-head"><div><div class="panel-eyebrow">${esc(champion)} · OP.GG TRIAL</div><h3>Popular core + boots</h3></div><span class="tiny-tag">${a.core?countFmt(a.core.games):'—'} CORE GAMES</span></div><div class="item-slots provider-slots">${rows.map(card).join('')}</div><p class="build-subnote">Core-set win rate ${pct(a.core?.winRate)}. Boots are sampled separately. Completed-item win rates favor games that lasted long enough to buy them.</p><details class="alt-build"><summary>Later items + full skill order</summary><div class="later-options">${options.map(([label,list])=>`<div><strong>${label}</strong>${(list||[]).slice(0,3).map(row=>`<p>${esc(row.items.join(' + '))}<small>${pct(row.winRate)} · ${countFmt(row.games)} games</small></p>`).join('') || '<p>No sample returned</p>'}</div>`).join('')}</div><p class="micro muted">Skill order: ${esc(a.skills.join(' → ') || 'Not returned')}</p></details></div>`;
+  const alternatives='<details class="alt-build"><summary>More later items + full skill order</summary><div class="later-options">'+options.map(([label,list])=>
+    '<div><strong>'+label+'</strong>'+((list||[]).slice(0,3).map(row=>'<p>'+esc(row.items.join(' + '))+'<small>'+pct(row.winRate)+' · '+countFmt(row.games)+' games</small></p>').join('') || '<p>No sample returned</p>')+'</div>'
+  ).join('')+'</div><p class="micro muted">Skill order: '+esc(a.skills.join(' → ') || 'Not returned')+'</p></details>';
+  const countNote=path.fourth
+    ? 'Selected 4th item: '+countFmt(path.fourth.games)+' games · '+pct(path.fourth.winRate)+' WR. Later picks are independent samples.'
+    : 'No distinct fourth-item alternatives were supplied for this champion and role.';
+  return '<div class="build-panel"><div class="build-head"><div><div class="panel-eyebrow">'+esc(champion)+' · OP.GG LIVE</div><h3>'+(paths.length>1?'Top '+paths.length+' fourth-item paths':'Popular core + boots')+'</h3></div><span class="tiny-tag">'+countFmt(a.core?.games)+' CORE GAMES</span></div>'
+    +choiceButtons+'<div class="item-slots provider-slots">'+path.items.map(card).join('')+'</div>'
+    +(path.items.length<6?'<p class="build-subnote">Only '+path.items.length+' distinct items were returned for this path.</p>':'')
+    +'<p class="build-subnote">Core win rate '+pct(a.core?.winRate)+' · '+countNote+' Ranked by the popularity of the <strong>individual fourth item</strong>, not by full-build win rate. Core, boots and later items use separate samples.</p>'
+    +alternatives+'</div>';
 }
 async function loadPersonal() {
   if(!isDesktop || !live?.connected || personalBusy)return;
@@ -959,6 +1027,14 @@ function init() {
     event.preventDefault();
     try{await nativeInvoke('plugin:opener|open_url',{url:link.href});}
     catch{el('stats-status').textContent='Could not open the source. Copy this link into your browser: '+link.href;}
+  });
+  document.addEventListener('click',event=>{
+    const button=event.target.closest?.('[data-build-path]');
+    if(!button)return;
+    const index=Number(button.dataset.buildPath);
+    if(!Number.isInteger(index) || index<0 || index>2)return;
+    selectedBuildByKey.set(statsKey(),index);
+    renderMatchup();renderTeam();
   });
   populateDatalist();syncInputs(); updateConnection(); refresh(); selectTab('team');
   el('champion').addEventListener('input', e => { if (el('champion').readOnly) return; selection.champion=e.target.value; persist(); refresh(); });
