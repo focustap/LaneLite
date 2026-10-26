@@ -49,7 +49,7 @@
       <div class="sidebar-footer"><div class="low-impact-icon">◌</div><div><strong>No background services.</strong><span>Polling stops when you close this window.</span></div></div>
     </aside>
     <main class="main">
-      <header class="topbar"><div class="topbar-title">DRAFT DESK <span class="slash">/</span> <span id="breadcrumb">Enemy team</span></div><div class="topbar-right"><span class="version">0.4.0</span><span class="separator"></span><span class="privacy-status">● Local LP history</span></div></header>
+      <header class="topbar"><div class="topbar-title">DRAFT DESK <span class="slash">/</span> <span id="breadcrumb">Enemy team</span></div><div class="topbar-right"><span class="version">0.4.1</span><span class="separator"></span><span class="privacy-status">● Local LP history</span></div></header>
       <div class="main-content">
         <div class="hero"><div><div class="eyebrow">QUIET BY DESIGN</div><h1>Your next game<span class="period">.</span></h1></div><p>Lock in. Check the draft. Play.</p></div>
         <nav class="tabs" aria-label="Companion views">
@@ -613,6 +613,7 @@ let inFlight = false;
 let pollTimer;
 let statsTimer;
 let statsRequest=0;
+const statsAttemptAt=new Map();
 let providerBusy=false;
 let providerError='';
 let providerKey='';
@@ -652,18 +653,20 @@ function championIcon(name,cls='champion-icon') {
 }
 function scheduleStats() {
   const key=statsKey();
-  if(providerKey===key)return;
-  providerKey=key; providerError='';statsRequest++;providerBusy=false;
-  clearTimeout(statsTimer);
+  const changed=providerKey!==key;
+  if(!changed && (providerBusy || statsTimer || Date.now()-(providerEntry()?.at || 0)<30*60*1000 || Date.now()-(statsAttemptAt.get(key) || 0)<10*60*1000))return;
+  if(changed){providerKey=key; providerError='';statsRequest++;providerBusy=false;}
+  clearTimeout(statsTimer);statsTimer=null;
   if(!chosenChampion() || !isDesktop || !safelyRead('lanelite.liveStats.v1',true))return;
   if(Date.now()-(providerEntry()?.at || 0)<30*60*1000)return;
-  statsTimer=setTimeout(()=>loadProvider(),700);
+  statsTimer=setTimeout(()=>{statsTimer=null;loadProvider();},700);
 }
 async function loadProvider(force=false) {
   if(!isDesktop || !chosenChampion() || providerBusy)return;
   const key=statsKey();
   if(!force && Date.now()-(providerEntry()?.at || 0)<30*60*1000)return;
   const request=++statsRequest;providerBusy=true;providerError='';renderStatistics();
+  statsAttemptAt.set(key,Date.now());
   try {
     const raw=await nativeInvoke('opgg_analysis',{champion:opggChampionName(chosenChampion()),position:opggPosition(selection.role)});
     const analysis=normalizeAnalysis(decodeMcpResult(raw));
@@ -677,7 +680,7 @@ function renderStatistics() {
   const name=chosenChampion(),opponent=chosenOpponent(),a=providerAnalysis(),entry=providerEntry();
   const links=lolalyticsLinks(name,selection.role,opponent);
   const sourceLinks=links?`<div class="source-links"><a href="https://op.gg/lol/champions/${encodeURIComponent(opggChampionName(name).toLowerCase().replaceAll('_',''))}/${opggPosition(selection.role)}/build" target="_blank" rel="noopener noreferrer">OP.GG ↗</a><a href="${esc(links.counters)}" target="_blank" rel="noopener noreferrer">LoLalytics counters ↗</a><a href="${esc(links.matchup || links.build)}" target="_blank" rel="noopener noreferrer">${opponent?'Full matchup':'Builds + synergy'} ↗</a></div>`:'';
-  const status=providerBusy?'Updating OP.GG…':providerError || (a?`OP.GG trial · ${a.patch?`Patch ${a.patch}`:'Patch not supplied'} · ${new Date(entry.at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}`:isDesktop?'OP.GG trial · waiting for a champion':'Live stats available in the desktop app');
+  const status=providerBusy?'Updating OP.GG…':providerError || (a?`OP.GG trial · ${a.patch?`Patch ${a.patch}`:'Patch not supplied'} · cached ${new Date(entry.at).toLocaleString([],{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}`:isDesktop?'OP.GG trial · waiting for a champion':'Live stats available in the desktop app');
   el('stats-status').textContent=status;
   el('stats-refresh').disabled=!isDesktop || !name || providerBusy;
   const pairRows=rows=>rows.map(r=>`<button type="button" class="stat-pair ${selectedEnemies().includes(r.name)||allyNames.includes(r.name)?'draft-highlight':''}" data-matchup="${esc(r.name)}"><span class="pair-name">${championIcon(r.name)}<span><strong>${esc(r.name)}</strong>${r.position?`<small>${esc(r.position)}</small>`:''}</span></span><span><strong>${pct(r.winRate)}</strong><small>${countFmt(r.games)} games${r.games<500?' · small sample':''}</small></span></button>`).join('');
@@ -950,6 +953,13 @@ function simulateRankedGame() {
   updateConnection(); refresh();selectTab('ranked');
 }
 function init() {
+  if(isDesktop)document.addEventListener('click',async event=>{
+    const link=event.target.closest?.('a[href^="https://"]');
+    if(!link)return;
+    event.preventDefault();
+    try{await nativeInvoke('plugin:opener|open_url',{url:link.href});}
+    catch{el('stats-status').textContent='Could not open the source. Copy this link into your browser: '+link.href;}
+  });
   populateDatalist();syncInputs(); updateConnection(); refresh(); selectTab('team');
   el('champion').addEventListener('input', e => { if (el('champion').readOnly) return; selection.champion=e.target.value; persist(); refresh(); });
   el('opponent').addEventListener('input', e => { selection.opponent=e.target.value; persist(); refresh(); });

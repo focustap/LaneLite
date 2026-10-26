@@ -6,7 +6,7 @@ A small Windows League companion. Open it when you want draft help; closing the 
 
 Get the **setup `.exe`** or **LaneLite-Portable.exe** from [Releases](https://github.com/focustap/LaneLite/releases/latest). The installer supplies WebView2 if needed; the portable app needs Microsoft Edge WebView2 Runtime already installed. Releases are unsigned, so Windows may show a publisher warning. Do not run source ZIPs expecting an installer.
 
-## What's in 0.4
+## What's in 0.4.1
 
 - Automatic locked-champion detection, lobby/phase monitoring and visible enemy draft picks, preserving the tested automatic LP journal.
 - Locked ally picks appear in a compact strip. Your actual lane opponent remains your choice.
@@ -26,7 +26,7 @@ Get the **setup `.exe`** or **LaneLite-Portable.exe** from [Releases](https://gi
 | Riot Data Dragon | Champion names, portraits, item and rune icons | Public CDN |
 | Riot public API | Future provider option for account history/rank | Not configured in this release; no Riot API key is embedded |
 
-OP.GG's official MCP implementation is documented at https://github.com/opgginc/opgg-mcp and currently publishes `https://mcp-api.op.gg/mcp`. Endpoint availability and permission to redistribute provider data can change; this personal trial is not a claim of a commercial data license. LaneLite does not bulk harvest the dataset. Disable live requests in **Connection & data**. The app continues to show references and local LP history if the provider fails.
+OP.GG's official MCP implementation is documented at https://github.com/opgginc/opgg-mcp and currently publishes `https://mcp-api.op.gg/mcp`. Endpoint availability and permission to redistribute provider data can change; this personal trial is not a claim of a commercial data license. LaneLite does not bulk harvest the dataset. Disable live requests in **Connection & data**. Expired cache entries refresh while the app remains open; failed requests wait at least ten minutes before an automatic retry. User-clicked source links open in your default browser, limited to OP.GG, LoLalytics and Mobalytics. The app continues to show references and local LP history if the provider fails.
 
 OP.GG sometimes returns rounded rates, so the UI does not imply extra precision. The matchup rates always use the selected champion's `my_win_rate`, including difficult matchups. Synergy rates describe joint results in the provider's sample, not a causal improvement. Later completed-item rates have survival/selection bias; they are not proof that an item causes wins. LoLalytics Δ2 is a normalized matchup metric and is not mixed with OP.GG raw win rates.
 

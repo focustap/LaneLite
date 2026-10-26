@@ -1,7 +1,25 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Only Tauri's minimal core capability; no filesystem or process permissions",
-  "windows": ["main"],
-  "permissions": ["core:default"]
+  "description": "Core UI plus user-clicked HTTPS source links; no filesystem or general shell access",
+  "windows": [
+    "main"
+  ],
+  "permissions": [
+    "core:default",
+    {
+      "identifier": "opener:allow-open-url",
+      "allow": [
+        {
+          "url": "https://op.gg/*"
+        },
+        {
+          "url": "https://lolalytics.com/*"
+        },
+        {
+          "url": "https://mobalytics.gg/*"
+        }
+      ]
+    }
+  ]
 }
