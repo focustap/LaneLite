@@ -118,23 +118,25 @@ function renderProviderBuild(a,champion) {
   const paths=getProviderBuildPaths(a);
   if(!paths.length)return null;
   const active=Math.min(selectedBuildByKey.get(statsKey()) || 0,paths.length-1);
-  const path=paths[active];
-  const card=name=>'<div class="build-slot"><div class="slot-icon">'+itemIcon(name)+'</div><div class="slot-meta"><strong>'+esc(name)+'</strong></div></div>';
-  const choiceButtons=paths.length<2?'':'<div class="build-choice-tabs" role="group" aria-label="Choose a later-item path">'+paths.map((p,i)=>
-    '<button type="button" class="build-choice '+(active===i?'active':'')+'" data-build-path="'+i+'" aria-pressed="'+(active===i)+'"><strong>'+(i+1)+'. '+esc(p.fourth?.items?.[0] || 'Option')+'</strong><small>'+countFmt(p.fourth?.games)+' fourth-item games</small></button>'
-  ).join('')+'</div>';
+  const path=paths[active],core=path.core;
+  const sourceSlug=opggChampionName(champion).toLowerCase().replaceAll('_','');
+  const fullCoreUrl='https://op.gg/lol/champions/'+encodeURIComponent(sourceSlug)+'/items';
+  const card=(name,label)=>'<div class="build-slot"><div class="slot-icon">'+itemIcon(name)+'</div><div class="slot-meta"><span class="slot-number">'+esc(label)+'</span><strong>'+esc(name)+'</strong></div></div>';
+  const selectors=paths.length>1?'<div class="build-choice-tabs" role="group" aria-label="Distinct sampled core builds">'+paths.map((p,i)=>
+    '<button type="button" class="build-choice '+(active===i?'active':'')+'" data-build-path="'+i+'" aria-pressed="'+(active===i)+'"><strong>'+esc(p.core.items.join(' · '))+'</strong><small>'+countFmt(p.core.games)+' games · '+pct(p.core.winRate)+' core WR</small></button>'
+  ).join('')+'</div>':'';
   const options=[['4th item',a.fourth],['5th item',a.fifth],['6th item',a.sixth]];
-  const alternatives='<details class="alt-build"><summary>More later items + full skill order</summary><div class="later-options">'+options.map(([label,list])=>
+  const additional='<details class="alt-build"><summary>Later item options (separately sampled)</summary><div class="later-options">'+options.map(([label,list])=>
     '<div><strong>'+label+'</strong>'+((list||[]).slice(0,3).map(row=>'<p>'+esc(row.items.join(' + '))+'<small>'+pct(row.winRate)+' · '+countFmt(row.games)+' games</small></p>').join('') || '<p>No sample returned</p>')+'</div>'
   ).join('')+'</div><p class="micro muted">Skill order: '+esc(a.skills.join(' → ') || 'Not returned')+'</p></details>';
-  const countNote=path.fourth
-    ? 'Selected 4th item: '+countFmt(path.fourth.games)+' games · '+pct(path.fourth.winRate)+' WR. Later picks are independent samples.'
-    : 'No distinct fourth-item alternatives were supplied for this champion and role.';
-  return '<div class="build-panel"><div class="build-head"><div><div class="panel-eyebrow">'+esc(champion)+' · OP.GG LIVE</div><h3>'+(paths.length>1?'Top '+paths.length+' fourth-item paths':'Popular core + boots')+'</h3></div><span class="tiny-tag">'+countFmt(a.core?.games)+' CORE GAMES</span></div>'
-    +choiceButtons+'<div class="item-slots provider-slots">'+path.items.map(card).join('')+'</div>'
-    +(path.items.length<6?'<p class="build-subnote">Only '+path.items.length+' distinct items were returned for this path.</p>':'')
-    +'<p class="build-subnote">Core win rate '+pct(a.core?.winRate)+' · '+countNote+' Ranked by the popularity of the <strong>individual fourth item</strong>, not by full-build win rate. Core, boots and later items use separate samples.</p>'
-    +alternatives+'</div>';
+  const unavailable=paths.length===1?'<p class="build-subnote">OP.GG MCP currently supplies only one sampled core for this champion/role. Showing slight item swaps as extra full builds would be misleading.</p>':'';
+  const coreCards=core.items.map((name,i)=>card(name,'CORE '+(i+1))).join('');
+  const boots=(a.boots?.items || []).filter(n=>!core.items.includes(n)).map(name=>card(name,'BOOTS')).join('');
+  return '<div class="build-panel"><div class="build-head"><div><div class="panel-eyebrow">'+esc(champion)+' · OP.GG LIVE</div><h3>'+(paths.length>1?paths.length+' distinct core builds':'Popular core build')+'</h3></div><span class="tiny-tag">'+countFmt(core.games)+' CORE GAMES</span></div>'
+    +selectors+'<div class="item-slots provider-slots">'+coreCards+boots+'</div>'
+    +'<p class="build-subnote">This <strong>three-item core</strong> was played together in '+countFmt(core.games)+' games with '+pct(core.winRate)+' win rate. Boots are sampled separately; this is not a measured six-item build.</p>'
+    +unavailable+'<p class="build-source"><a href="'+esc(fullCoreUrl)+'" target="_blank" rel="noopener noreferrer">Compare different full cores on OP.GG ↗</a> · Source patch '+esc(a.patch || 'unknown')+'</p>'
+    +additional+'</div>';
 }
 async function loadPersonal() {
   if(!isDesktop || !live?.connected || personalBusy)return;
