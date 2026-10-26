@@ -26,3 +26,14 @@
 .build-choice strong{font-size:11px;line-height:1.3;overflow-wrap:anywhere}
 .build-choice small{font-size:10px;color:#92a8af;line-height:1.25}
 @media(max-width:900px){.build-choice{padding:8px 7px}.build-choice strong{font-size:10px}.build-choice small{font-size:9px}}
+
+/* Verified in-app core selection: show actual items before a card is selected. */
+.build-choice-tabs{margin:0 0 14px;align-items:stretch}
+.build-choice{gap:7px;min-height:109px;padding:11px 10px}
+.build-choice strong{font-size:11px;line-height:1.35;min-height:29px}
+.choice-icons{display:flex;flex-wrap:nowrap;gap:5px;align-items:center;max-width:100%}
+.choice-item{display:grid;place-items:center;width:31px;height:31px;flex:0 0 31px;overflow:hidden;border-radius:5px;background:#24343c;border:1px solid #3d525a}
+.choice-item .item-icon{width:100%;height:100%;object-fit:cover}
+.choice-item .item-initial{font-size:11px}
+.build-choice small{font-size:10px;line-height:1.4}
+@media(max-width:760px){.build-choice-tabs{grid-template-columns:1fr}.build-choice{min-height:0}.build-choice strong{min-height:0}.choice-icons{margin:1px 0}}
