@@ -70,8 +70,20 @@ if ($after[0].DisplayVersion -ne $ExpectedVersion) { throw "Installed version is
 if ($after[0].InstallLocation.Trim('"') -ne $previousLocation) { throw 'Upgrade installed into a different folder' }
 $installedExe = Join-Path $previousLocation 'lanelite.exe'
 $builtExe = Join-Path $PSScriptRoot '../src-tauri/target/release/lanelite.exe'
-if ((Get-FileHash $installedExe -Algorithm SHA256).Hash -ne (Get-FileHash $builtExe -Algorithm SHA256).Hash) {
-    throw 'Installed executable does not match the new build'
+# Tauri bundles a copy with its NSIS marker, then restores the portable binary.
+# Reproduce only that documented fixed-length patch in memory; every other byte
+# must match. Source: tauri-bundler/src/bundle.rs, patch_binary(PackageType::Nsis).
+$expectedBytes = [System.IO.File]::ReadAllBytes((Resolve-Path $builtExe).Path)
+$marker = '__TAURI_BUNDLE_TYPE_VAR_UNK'
+$offset = [System.Text.Encoding]::Latin1.GetString($expectedBytes).IndexOf($marker, [System.StringComparison]::Ordinal)
+if ($offset -lt 0) { throw 'Expected Tauri bundle marker is missing from the portable binary' }
+$nsisMarker = [System.Text.Encoding]::ASCII.GetBytes('__TAURI_BUNDLE_TYPE_VAR_NSS')
+[System.Array]::Copy($nsisMarker, 0, $expectedBytes, $offset, $nsisMarker.Length)
+$expectedHash = [System.Convert]::ToHexString([System.Security.Cryptography.SHA256]::HashData($expectedBytes))
+$installedHash = (Get-FileHash $installedExe -Algorithm SHA256).Hash
+if ($installedHash -ne $expectedHash) {
+    $installedVersion = (Get-Item $installedExe).VersionInfo.ProductVersion
+    throw "Installed executable does not match the new NSIS payload (version $installedVersion; expected $expectedHash, got $installedHash)"
 }
 foreach ($marker in $markers) {
     if (-not (Test-Path $marker.Path)) { throw "Upgrade deleted existing app data: $($marker.Path)" }
