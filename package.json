@@ -1,0 +1,15 @@
+{
+  "name": "lanelite",
+  "private": true,
+  "version": "0.3.0",
+  "description": "Quiet, local-first League of Legends match prep prototype",
+  "scripts": {
+    "tauri": "tauri",
+    "desktop": "tauri dev",
+    "desktop:build": "tauri build",
+    "test": "node --test tests/*.test.mjs"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.0.0"
+  }
+}

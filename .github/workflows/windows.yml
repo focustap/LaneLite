@@ -1,0 +1,58 @@
+name: Windows executable
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: windows-release
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
+      - run: npm ci
+      - run: npm test
+      - name: Native tests
+        run: cargo test --manifest-path src-tauri/Cargo.toml
+      - name: Build Windows executable and installer
+        run: npm run desktop:build -- --bundles nsis
+      - name: Stage downloads
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path downloads
+          Copy-Item src-tauri/target/release/lanelite.exe downloads/LaneLite-Portable.exe
+          Copy-Item src-tauri/target/release/bundle/nsis/*-setup.exe downloads/
+          Get-ChildItem downloads/*.exe | Get-FileHash -Algorithm SHA256 | ForEach-Object { "$($_.Hash)  $([System.IO.Path]::GetFileName($_.Path))" } | Set-Content downloads/SHA256SUMS.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: LaneLite-Windows
+          path: downloads/*
+      - name: Publish Windows downloads
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: pwsh
+        run: |
+          $version = (Get-Content package.json | ConvertFrom-Json).version
+          $tag = "v$version"
+          gh release view $tag *> $null
+          if ($LASTEXITCODE -ne 0) {
+            gh release create $tag --target "${{ github.sha }}" --title "LaneLite $version" --notes "Quiet Windows companion. Download the setup executable to install, or LaneLite-Portable.exe to run directly. Microsoft Edge WebView2 Runtime is required for the portable version. Binaries are unsigned."
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
+          gh release upload $tag downloads/* --clobber

@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark" />
+  <title>LaneLite · Your quiet League companion</title>
+  <style>
+:root{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:#e7eaf2;background:#0b0e14;font-synthesis:none}*{box-sizing:border-box}body{margin:0;min-width:320px}button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #84ded0;outline-offset:2px}.app-shell{min-height:100vh;display:grid;grid-template-columns:290px minmax(0,1fr)}.sidebar{background:#10151e;border-right:1px solid #262d38;padding:27px 20px;min-height:100vh;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow:auto}.logo-row{display:flex;align-items:center;gap:13px;margin-bottom:26px}.logo{width:44px;height:44px;display:flex;align-items:center;justify-content:center;border:1px solid #577c7c;border-radius:12px;color:#a4f0dc;font-family:'Segoe UI',system-ui,sans-serif;font-size:28px;font-weight:700;box-shadow:inset 0 0 18px #183837}.logo span{color:#d9ed87}.logo-name{font:700 19px 'Segoe UI',system-ui,sans-serif;letter-spacing:-.8px}.logo-sub{font-size:9px;letter-spacing:2px;color:#7c929a;font-weight:700;margin-top:3px}.connection{display:flex;gap:10px;align-items:center;padding:12px 13px;border-radius:11px;background:#172021;border:1px solid #2b4040;color:#a6e4d5;font-size:12px;margin-bottom:32px}.live-dot{width:7px;height:7px;background:#85d5b1;border-radius:50%;box-shadow:0 0 10px #85d5b1}.connection-tag{margin-left:auto;color:#728e85;font-size:9px;font-weight:700;letter-spacing:1px}.sidebar-label,.eyebrow{font-size:10px;letter-spacing:2.1px;color:#8bd3c0;font-weight:700}.sidebar-label{color:#748390;margin:0 0 16px}.sidebar label,.lp-form-panel label{display:block;font-size:12px;color:#b1becb;margin:0 0 7px}.sidebar input,.sidebar select,.lp-form-panel input,.lp-form-panel select{width:100%;background:#191f2b;border:1px solid #323b49;color:#eff5f9;border-radius:9px;padding:12px 13px;min-height:43px;margin-bottom:18px;outline:0;transition:border .15s}.sidebar input:focus,.sidebar select:focus,.lp-form-panel input:focus,.lp-form-panel select:focus{border-color:#7fccc0}.sidebar input::placeholder,.lp-form-panel input::placeholder{color:#687585}select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2398a7b9' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:right 12px center!important;background-size:15px!important}.muted{color:#8895a6}.micro{font-size:11px;margin:-8px 0 6px}.sidebar-divider{height:1px;background:#29313b;margin:18px 0 24px}.team-inputs{display:grid;gap:8px}.enemy-input{display:flex;align-items:center;gap:9px}.enemy-number{height:26px;width:26px;border-radius:7px;display:grid;place-items:center;background:#222b34;border:1px solid #333c4a;font-size:11px;color:#8495a6;flex-shrink:0}.sidebar .enemy-input input{margin:0;min-height:37px;padding:9px 10px;font-size:12px}.secondary-button{border:1px solid #3a4551;background:transparent;color:#a5b6c6;padding:11px 12px;border-radius:9px}.demo-button{margin-top:14px;font-size:11px;display:flex;justify-content:space-between}.demo-button:hover{border-color:#8bd3c0;color:#d0f8f0}.sidebar-footer{margin-top:auto;display:flex;gap:10px;align-items:flex-start;padding:17px 0 2px;color:#a7bac0}.sidebar-footer strong,.sidebar-footer span{display:block;font-size:11px;line-height:1.5}.sidebar-footer strong{color:#b5ddcf}.sidebar-footer span{color:#70818e}.low-impact-icon{font-size:26px;line-height:19px;color:#8bd3c0}.main{min-width:0;background:radial-gradient(ellipse 80% 40% at 50% 0%,#152027 0%,transparent 80%),#0b0e14}.topbar{height:68px;border-bottom:1px solid #242b35;display:flex;align-items:center;justify-content:space-between;padding:0 46px;color:#a8b3bf;font-size:11px;letter-spacing:1px;font-weight:700}.topbar-title{color:#e6edf2}.slash{color:#506273;padding:0 9px}.topbar-title #breadcrumb{color:#94cfc2}.topbar-right{display:flex;gap:14px;align-items:center}.version{color:#8796a6}.separator{width:1px;height:17px;background:#38414b}.privacy-status{color:#92bea9;text-transform:none;letter-spacing:0;font-weight:500}.main-content{max-width:1260px;margin:auto;padding:44px 46px 28px}.hero{margin-bottom:36px}.hero h1{font:600 clamp(28px,3.6vw,45px) 'Segoe UI',system-ui,sans-serif;letter-spacing:-1.9px;margin:9px 0 12px;color:#f2f4f6}.period{color:#8dd3bf}.hero p{color:#8d9aa8;font-size:13px;line-height:1.6;margin:0}.tabs{display:flex;align-items:center;border-bottom:1px solid #29323d;gap:30px;margin-bottom:34px}.tab{padding:0 0 18px;background:none;border:none;color:#8693a2;font-weight:600;font-size:13px;position:relative}.tab-symbol{color:#8bbdaf;margin-right:6px}.tab.active{color:#d4f5eb}.tab.active:after{position:absolute;content:'';height:2px;background:#91d8ca;left:0;right:0;bottom:-1px}.tab:hover{color:#e1ecef}.section-heading{display:flex;justify-content:space-between;align-items:end;gap:15px;margin-bottom:22px}.section-heading h2{font:600 27px 'Segoe UI',system-ui,sans-serif;letter-spacing:-.9px;color:#edf3f6;margin:7px 0 0}.section-heading h3,.history-heading h3{font:600 17px 'Segoe UI',system-ui,sans-serif;margin:0}.section-heading.compact{margin:31px 0 16px}.section-heading.compact p{font-size:12px;margin:6px 0 0}.subtle-chip,.tiny-tag{font-size:9px;letter-spacing:1.1px;color:#91b6ad;border:1px solid #2c403f;padding:8px 10px;border-radius:6px;white-space:nowrap;font-weight:700}.matchup-banner{padding:19px 21px;border:1px solid #2f4849;background:linear-gradient(115deg,#1a2b2d,#162027);border-radius:13px;margin-bottom:16px;display:flex;align-items:center;gap:16px}.banner-icon{width:54px;height:54px;border-radius:11px;background:#294242;border:1px solid #45655f;display:grid;place-items:center;flex-shrink:0;font:700 22px 'Segoe UI',system-ui,sans-serif;color:#a6f0db}.banner-main{flex:1;min-width:0}.banner-kicker{font-size:10px;letter-spacing:1.3px;color:#80bfaa;font-weight:700;margin-bottom:7px}.banner-title{font:600 17px 'Segoe UI',system-ui,sans-serif;letter-spacing:-.3px}.banner-title span{color:#8c9ca9;font-size:14px}.banner-hint{font-size:12px;color:#8caaa8;margin-top:5px}.cards{display:grid;gap:16px}.two-columns{grid-template-columns:repeat(2,minmax(0,1fr))}.panel{background:#141a24;border:1px solid #2a3440;border-radius:13px;padding:21px;min-width:0}.panel-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:22px}.panel-eyebrow{font-size:10px;font-weight:700;letter-spacing:1.7px;color:#7f91a3}.tiny-tag{border-color:#39404a;color:#8f9aa9;padding:6px 7px}.minimal-icon{font-size:27px;line-height:13px;color:#91c2b5}.rune-title{font:600 28px 'Segoe UI',system-ui,sans-serif;letter-spacing:-1px;margin:4px 0 7px}.rune-path{font-size:11px;color:#93c2b4;margin-bottom:16px}.rune-copy{font-size:12px;line-height:1.7;color:#a7b3bf;margin-bottom:18px}.rule{height:1px;background:#303846;margin:18px 0}.alternate-label{font-size:10px;letter-spacing:1.1px;color:#788a99;font-weight:700;margin-bottom:8px}.alternate-title{color:#d7e0e7;font:600 16px 'Segoe UI',system-ui,sans-serif;margin-bottom:5px}.tip{display:flex;gap:12px;margin:0 0 20px}.tip:last-child{margin-bottom:0}.tip-num{height:25px;min-width:25px;border-radius:7px;background:#1c3434;color:#a2e4ca;display:grid;place-items:center;font-size:12px}.tip-title{font-size:13px;font-weight:700;color:#e3e9ef;margin-bottom:5px}.tip-text{font-size:12px;line-height:1.55;color:#90a0af}.empty-title{font:600 21px 'Segoe UI',system-ui,sans-serif;margin-bottom:12px}.empty-body{font-size:13px;line-height:1.6;color:#8b98a8}.context-strip{border-radius:8px;background:#1a2b2c;padding:12px 13px;color:#a4d6c9;line-height:1.55;font-size:11px}.info-footnote{font-size:11px;line-height:1.6;color:#657584;margin-top:19px}.team-summary{background:#151e29;border:1px solid #2b3843;border-radius:13px;padding:22px}.summary-heading{display:flex;justify-content:space-between;gap:15px;margin-bottom:17px;align-items:center}.summary-heading strong{font:600 16px 'Segoe UI',system-ui,sans-serif}.summary-heading span{font-size:11px;color:#86a4a6}.bars{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px}.bar-label{font-size:11px;color:#c4d1d8;display:flex;justify-content:space-between;margin-bottom:8px}.bar-track{height:5px;background:#2a3540;border-radius:5px;overflow:hidden}.bar-fill{height:100%;background:#91d7c1;border-radius:5px;max-width:100%}.analysis-card{padding:18px 19px;background:#141a24;border:1px solid #2b3540;border-radius:12px;min-height:125px}.analysis-tag{color:#88b8a8;font-size:9px;letter-spacing:1.4px;font-weight:700;text-transform:uppercase}.analysis-title{font:600 17px 'Segoe UI',system-ui,sans-serif;margin:8px 0}.analysis-copy{font-size:12px;line-height:1.6;color:#91a0ae}.lp-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:19px}.stat-card{padding:18px 20px;border:1px solid #2b3640;background:#151c26;border-radius:12px}.stat-label{font-size:11px;color:#8a9bae}.stat-value{font:600 29px 'Segoe UI',system-ui,sans-serif;letter-spacing:-1px;margin-top:8px}.positive{color:#8de2be}.negative{color:#f3a4a8}.lp-form-panel{margin-bottom:29px}.lp-form-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1.4fr;gap:12px}.lp-form-panel input,.lp-form-panel select{margin:0}.form-bottom{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:20px}.lp-preview{font-size:12px;color:#8d9da9}.primary-button{border:0;background:#9adbc8;color:#162526;padding:12px 16px;font-weight:700;font-size:12px;border-radius:9px}.primary-button:hover{background:#b7ead8}.history-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.history-actions{display:flex;gap:18px}.link-button{background:none;border:0;color:#8dc9b7;font-size:11px;padding:5px 0}.link-button.danger{color:#ac8087}.history{border:1px solid #2a3641;border-radius:12px;overflow:hidden}.history-empty{padding:29px;text-align:center;color:#8492a2;font-size:12px}.match-row{display:grid;grid-template-columns:90px 1fr 110px 90px;align-items:center;gap:10px;padding:15px 20px;border-bottom:1px solid #27313b;font-size:12px}.match-row:last-child{border:0}.match-result{font-weight:700}.match-result.win{color:#8ae1bb}.match-result.loss{color:#ec99a5}.match-detail{color:#c2d0dc}.match-date{color:#8191a2}.match-delta{text-align:right;font-weight:700;font-size:14px}.hidden{display:none!important}.footer{max-width:880px;border-top:1px solid #26313c;padding-top:22px;margin-top:48px;color:#667786;font-size:10px;line-height:1.6}
+@media(max-width:1080px){.app-shell{grid-template-columns:245px minmax(0,1fr)}.sidebar{padding:25px 17px}.main-content{padding:36px 26px}.topbar{padding:0 26px}.two-columns{grid-template-columns:1fr}.lp-form-grid{grid-template-columns:1fr 1fr}.subtle-chip{display:none}}@media(max-width:680px){.app-shell{display:block}.sidebar{position:static;height:auto;min-height:0;padding:17px}.logo-row{margin-bottom:14px}.connection{margin-bottom:18px}.sidebar-footer{display:none}.team-inputs{grid-template-columns:1fr 1fr}.sidebar-divider{margin:6px 0 15px}.main-content{padding:26px 17px}.topbar{padding:0 17px;height:56px}.privacy-status{display:none}.tabs{gap:19px}.tab{font-size:11px}.hero{margin-bottom:24px}.hero h1{letter-spacing:-1px}.section-heading h2{font-size:23px}.bars{grid-template-columns:1fr 1fr}.lp-stats{grid-template-columns:1fr 1fr 1fr;gap:7px}.stat-card{padding:12px}.stat-value{font-size:21px}.lp-form-grid{grid-template-columns:1fr 1fr}.match-row{grid-template-columns:53px 1fr 55px;padding:13px 10px}.match-date{display:none}}
+/* v0.2 automatic client connection / LP tracking */
+.auto-label,.experimental{color:#8cdac4;font-size:9px;letter-spacing:.5px;margin-left:5px;font-weight:700}.experimental{font-size:8px;color:#788a99;border:1px solid #364450;padding:3px 4px;border-radius:3px}.connection.offline{background:#202126;border-color:#3a3c44;color:#aab6c0}.connection.offline .live-dot{background:#667782;box-shadow:none}.sync-panel{margin-bottom:28px}.sync-main{display:flex;justify-content:space-between;align-items:center;gap:15px}.sync-main h3{font-size:19px;margin:0 0 7px;color:#e6f3ed}.sync-main p{font-size:12px;line-height:1.65;margin:0}.sync-signal{font-size:28px;color:#8ad6bb}.sync-rank-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}.sync-rank-row>div{padding:15px;background:#1b2630;border:1px solid #31434a;border-radius:9px}.sync-rank-row strong{display:block;margin-top:7px;font-size:16px;letter-spacing:-.2px}.demo-actions{display:flex;gap:12px;align-items:center;margin-top:13px}.demo-actions>span{font-size:10px;color:#8e9aa9}.lp-stats{grid-template-columns:repeat(3,minmax(0,1fr))}.stat-value.muted-numeric{color:#8996a6}.match-delta.unknown{color:#a7b9c9}.match-detail .rank-shift{display:block;color:#8caaa8;margin-top:4px}.sidebar input:read-only{border-color:#36534c;background:#16251f}.sync-panel .info-footnote{margin-bottom:2px}
+@media(max-width:680px){.sync-rank-row{grid-template-columns:1fr}.demo-actions{flex-direction:column;align-items:flex-start}.experimental{display:none}}
+
+.install-config{margin-top:22px;border:1px solid #293841;border-radius:10px;padding:10px 12px;color:#9db5b3;font-size:11px}.install-config summary{cursor:pointer;font-weight:650}.install-config label{margin-top:13px}.sidebar .install-config input{margin-bottom:9px;font-size:11px}.install-config .secondary-button{width:100%;font-size:11px}.install-config .micro{margin:12px 0 0;font-size:10px;line-height:1.5}
+
+</style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="logo-row"><div class="logo" aria-hidden="true">L<span>·</span></div><div><div class="logo-name">LaneLite</div><div class="logo-sub">QUIET BY DESIGN</div></div></div>
+      <div class="connection" id="connection"><span class="live-dot"></span><span id="connection-text">Waiting for League</span><span class="connection-tag" id="connection-tag">LOCAL</span></div>
+      <p class="sidebar-label">YOUR MATCH</p>
+      <label for="champion">Your champion <span class="auto-label" id="champion-mode">AUTO WHEN LOCKED</span></label>
+      <input id="champion" list="champion-list" placeholder="Search champion…" autocomplete="off" />
+      <label for="role">Your role</label>
+      <select id="role"><option>Jungle</option><option>Top</option><option>Mid</option><option>Bot</option><option>Support</option></select>
+      <label for="opponent">Your actual opponent</label>
+      <input id="opponent" list="champion-list" placeholder="Select matchup…" autocomplete="off" />
+      <p class="muted micro">Lane opponent is always your call. Your locked champion syncs automatically in the desktop app.</p>
+      <datalist id="champion-list"></datalist>
+      <div class="sidebar-divider"></div>
+      <p class="sidebar-label">OPPONENTS YOU KNOW</p>
+      <div class="team-inputs" id="team-inputs"></div>
+      <button class="secondary-button demo-button" id="sample-button" type="button">Try an example composition <span aria-hidden="true">↗</span></button>
+      <details class="install-config" id="install-config"><summary>League installed elsewhere?</summary><label for="install-dir">League of Legends folder</label><input id="install-dir" placeholder="D:\Games\League of Legends" spellcheck="false" /><button class="secondary-button" id="install-save" type="button">Save folder & reconnect</button><p class="muted micro" id="install-help">One-time setup for nonstandard install locations. Credentials stay in the native app.</p></details>
+      <div class="sidebar-footer"><div class="low-impact-icon">◌</div><div><strong>No background services.</strong><span>Polling stops when you close this window.</span></div></div>
+    </aside>
+    <main class="main">
+      <header class="topbar"><div class="topbar-title">GAME PREP <span class="slash">/</span> <span id="breadcrumb">Matchup</span></div><div class="topbar-right"><span class="version">ALPHA 0.2</span><span class="separator"></span><span class="privacy-status">● Private on this device</span></div></header>
+      <div class="main-content">
+        <div class="hero"><div class="eyebrow">BETTER DECISIONS. LESS NOISE.</div><h1>Just the info you need<span class="period">.</span></h1><p>Champion automatically detected. Rank tracked while open. No overlays, ads, or startup processes.</p></div>
+        <nav class="tabs" aria-label="Companion views">
+          <button class="tab" data-tab="matchup" type="button"><span class="tab-symbol">◇</span> Matchup <span class="experimental">EXPERIMENTAL</span></button>
+          <button class="tab active" data-tab="team" type="button"><span class="tab-symbol">♧</span> Enemy team</button>
+          <button class="tab" data-tab="ranked" type="button"><span class="tab-symbol">↗</span> LP tracker</button>
+        </nav>
+        <section id="matchup-view" class="tab-view hidden" aria-labelledby="matchup-heading">
+          <div class="section-heading"><div><div class="eyebrow">MATCHUP INTELLIGENCE</div><h2 id="matchup-heading">Your lane, your call.</h2></div><span class="subtle-chip">RULE-BASED · NOT LIVE STATS</span></div>
+          <div id="matchup-banner" class="matchup-banner"></div>
+          <div class="cards two-columns"><div class="panel rune-panel"><div class="panel-top"><div class="panel-eyebrow">RUNE DIRECTION</div><span class="tiny-tag">PROVISIONAL</span></div><div id="runes-output"></div></div><div class="panel tips-panel"><div class="panel-top"><div class="panel-eyebrow">HOW TO APPROACH IT</div><span class="minimal-icon">⌁</span></div><div id="tips-output"></div></div></div>
+          <div class="info-footnote">Suggestions are qualitative starting points, not champion matchup win rates. Verify against the current patch before ranked play.</div>
+        </section>
+        <section id="team-view" class="tab-view" aria-labelledby="team-heading">
+          <div class="section-heading"><div><div class="eyebrow">OPPONENT ANALYSIS</div><h2 id="team-heading">Read the composition.</h2></div><span class="subtle-chip">ONLY KNOWN PICKS</span></div>
+          <div id="team-summary" class="team-summary"></div>
+          <div class="section-heading compact"><div><h3>Situational responses</h3><p class="muted">Options worth considering, not items to force every game.</p></div></div>
+          <div class="cards two-columns" id="items-output"></div>
+          <div class="section-heading compact"><div><h3>Counterpick ideas</h3><p class="muted">Role-filtered champion archetypes, not verified matchup counters.</p></div></div>
+          <div class="cards two-columns" id="counter-output"></div>
+        </section>
+        <section id="ranked-view" class="tab-view hidden" aria-labelledby="ranked-heading">
+          <div class="section-heading"><div><div class="eyebrow">RANKED JOURNAL</div><h2 id="ranked-heading">Every LP matters.</h2></div><span class="subtle-chip">AUTO SYNC · WHILE OPEN</span></div>
+          <div class="lp-stats" id="lp-stats"></div>
+          <div class="panel sync-panel"><div class="panel-top"><div class="panel-eyebrow">LEAGUE CLIENT · LIVE</div><span class="tiny-tag" id="ranked-source">DESKTOP REQUIRED</span></div>
+            <div class="sync-main"><div><h3 id="sync-heading">Waiting for League client</h3><p class="muted" id="sync-detail">Open the desktop version of LaneLite and your League client. No rank numbers to type.</p></div><div class="sync-signal" id="sync-indicator">○</div></div>
+            <div class="sync-rank-row"><div><div class="stat-label">Solo/Duo</div><strong id="solo-current">—</strong></div><div><div class="stat-label">Flex</div><strong id="flex-current">—</strong></div></div>
+            <p class="info-footnote">Matches record automatically only if LaneLite observed the ranked lobby, game, and updated results. LP across rank promotions/demotions is marked as a rank change, not a guessed number.</p>
+            <div id="demo-actions" class="demo-actions hidden"><button class="secondary-button" id="simulate-button" type="button">Preview an automatic match (simulation)</button><span>Browser preview only · Not your Riot account</span></div>
+          </div>
+          <div class="history-heading"><h3>Recent matches</h3><div class="history-actions"><button id="export-button" class="link-button" type="button">Export CSV</button><button id="clear-button" class="link-button danger" type="button">Clear history</button></div></div><div id="history-output" class="history"></div><p class="info-footnote">Only confirmed ranked-game changes are listed. Missing snapshots and ambiguous LP changes are never fabricated.</p>
+        </section>
+        <footer class="footer">LaneLite isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.</footer>
+      </div>
+    </main>
+  </div>
+  <script type="module">
+/* LaneLite local recommendation engine. Educational heuristics only: no win-rate claims. */
+
+const FALLBACK_CHAMPIONS = `Aatrox,Ahri,Akali,Akshan,Alistar,Amumu,Anivia,Annie,Aphelios,Ashe,Aurelion Sol,Aurora,Azir,Bard,Bel'Veth,Blitzcrank,Brand,Braum,Briar,Caitlyn,Camille,Cassiopeia,Cho'Gath,Corki,Darius,Diana,Dr. Mundo,Draven,Ekko,Elise,Evelynn,Ezreal,Fiddlesticks,Fiora,Fizz,Galio,Gangplank,Garen,Gnar,Gragas,Graves,Gwen,Hecarim,Heimerdinger,Hwei,Illaoi,Irelia,Ivern,Janna,Jarvan IV,Jax,Jayce,Jhin,Jinx,Kai'Sa,Kalista,Karma,Karthus,Kassadin,Katarina,Kayle,Kayn,Kennen,Kha'Zix,Kindred,Kled,Kog'Maw,LeBlanc,Lee Sin,Leona,Lillia,Lissandra,Lucian,Lulu,Lux,Malphite,Malzahar,Maokai,Master Yi,Mel,Miss Fortune,Mordekaiser,Morgana,Naafiri,Nami,Nasus,Nautilus,Neeko,Nidalee,Nilah,Nocturne,Nunu & Willump,Olaf,Orianna,Ornn,Pantheon,Poppy,Pyke,Qiyana,Quinn,Rakan,Rammus,Rek'Sai,Rell,Renata Glasc,Renekton,Rengar,Riven,Rumble,Ryze,Samira,Sejuani,Senna,Seraphine,Sett,Shaco,Shen,Shyvana,Singed,Sion,Sivir,Skarner,Smolder,Sona,Soraka,Swain,Sylas,Syndra,Tahm Kench,Taliyah,Talon,Taric,Teemo,Thresh,Tristana,Trundle,Tryndamere,Twisted Fate,Twitch,Udyr,Urgot,Varus,Vayne,Veigar,Vel'Koz,Vex,Vi,Viego,Viktor,Vladimir,Volibear,Warwick,Wukong,Xayah,Xerath,Xin Zhao,Yasuo,Yone,Yorick,Yuumi,Zac,Zed,Zeri,Ziggs,Zilean,Zoe,Zyra`.split(',');
+
+const AP = new Set(`Ahri,Akali,Amumu,Anivia,Annie,Aurelion Sol,Aurora,Azir,Alistar,Brand,Cassiopeia,Cho'Gath,Diana,Ekko,Elise,Evelynn,Fiddlesticks,Fizz,Galio,Gragas,Gwen,Heimerdinger,Hwei,Ivern,Karthus,Kassadin,Katarina,Kennen,Lillia,Lissandra,Lulu,Lux,Malphite,Malzahar,Maokai,Mel,Mordekaiser,Morgana,Nami,Neeko,Nidalee,Nunu & Willump,Orianna,Rumble,Ryze,Seraphine,Singed,Swain,Syndra,Taliyah,Teemo,Veigar,Vel'Koz,Vex,Viktor,Vladimir,Volibear,Xerath,Zac,Ziggs,Zilean,Zoe,Zyra`.split(','));
+const ADDITIONAL_MAGIC = new Set(`Leona,Nautilus,Ornn,Rammus,Rell,Sejuani,Shen,Tahm Kench,Thresh,Zac`.split(','));
+const MIXED = new Set(`Warwick,Kayle,Kai'Sa,Jax,Kog'Maw,Udyr,Shyvana,Varus,Volibear`.split(','));
+const TANKS = new Set(`Alistar,Amumu,Braum,Cho'Gath,Dr. Mundo,Galio,Gragas,K'Sante,Leona,Malphite,Maokai,Nautilus,Ornn,Poppy,Rammus,Rell,Sejuani,Shen,Sion,Skarner,Tahm Kench,Taric,Thresh,Zac`.split(','));
+const HEALING = new Set(`Aatrox,Briar,Dr. Mundo,Fiora,Gwen,Illaoi,Irelia,Ivern,Kayn,Maokai,Mordekaiser,Nami,Nasus,Olaf,Renekton,Senna,Soraka,Swain,Sylas,Vladimir,Volibear,Warwick,Yuumi,Zac`.split(','));
+const HARD_CC = new Set(`Alistar,Amumu,Anivia,Ashe,Bard,Blitzcrank,Braum,Galio,Gragas,Janna,Jarvan IV,Leona,Lissandra,Lulu,Lux,Malphite,Maokai,Malzahar,Morgana,Nami,Nautilus,Neeko,Ornn,Poppy,Rakan,Rammus,Rell,Sejuani,Seraphine,Skarner,Thresh,Veigar,Vi,Warwick,Wukong,Zac,Zyra`.split(','));
+const RANGED = new Set(`Ahri,Akshan,Anivia,Annie,Aphelios,Ashe,Aurelion Sol,Aurora,Azir,Bard,Brand,Caitlyn,Cassiopeia,Corki,Draven,Ezreal,Graves,Heimerdinger,Hwei,Ivern,Janna,Jayce,Jhin,Jinx,Kai'Sa,Kalista,Karma,Karthus,Kayle,Kennen,Kindred,Kog'Maw,LeBlanc,Lissandra,Lucian,Lulu,Lux,Mel,Miss Fortune,Morgana,Nami,Neeko,Nidalee,Nilah,Orianna,Quinn,Renata Glasc,Rumble,Ryze,Senna,Seraphine,Sivir,Smolder,Sona,Soraka,Syndra,Taliyah,Teemo,Tristana,Twitch,Twisted Fate,Varus,Vayne,Veigar,Vel'Koz,Vex,Viktor,Xayah,Xerath,Zeri,Ziggs,Zilean,Zoe,Zyra`.split(','));
+const BURST = new Set(`Ahri,Akali,Annie,Aurora,Diana,Ekko,Elise,Evelynn,Fizz,Katarina,Kha'Zix,LeBlanc,Lissandra,Lux,Naafiri,Neeko,Nocturne,Qiyana,Rengar,Syndra,Talon,Vex,Veigar,Zed,Zoe`.split(','));
+const AUTOS = new Set(`Akshan,Aphelios,Ashe,Bel'Veth,Briar,Caitlyn,Draven,Fiora,Irelia,Jax,Jhin,Jinx,Kalista,Kayle,Kindred,Kog'Maw,Lucian,Master Yi,Nilah,Olaf,Quinn,Samira,Sett,Sivir,Tristana,Tryndamere,Twitch,Varus,Vayne,Warwick,Xayah,Yasuo,Yone,Zeri`.split(','));
+const POKE = new Set(`Ashe,Brand,Caitlyn,Corki,Ezreal,Jayce,Jhin,Karma,Lux,Morgana,Orianna,Seraphine,Teemo,Varus,Vel'Koz,Xerath,Ziggs,Zoe,Zyra`.split(','));
+
+function traits(name) {
+  return {
+    ap: (AP.has(name) || ADDITIONAL_MAGIC.has(name)) && !MIXED.has(name), mixed: MIXED.has(name), tank: TANKS.has(name), healing: HEALING.has(name), cc: HARD_CC.has(name),
+    ranged: RANGED.has(name), burst: BURST.has(name), autos: AUTOS.has(name), poke: POKE.has(name),
+  };
+}
+
+function analyzeTeam(enemies = []) {
+  const names = enemies.filter(Boolean);
+  const counts = { total: names.length, ap: 0, ad: 0, mixed: 0, tanks: 0, healing: 0, cc: 0, ranged: 0, burst: 0, autos: 0, poke: 0 };
+  for (const name of names) {
+    const t = traits(name);
+    counts[t.mixed ? 'mixed' : t.ap ? 'ap' : 'ad']++;
+    if (t.tank) counts.tanks++;
+    if (t.healing) counts.healing++;
+    if (t.cc) counts.cc++;
+    if (t.ranged) counts.ranged++;
+    if (t.burst) counts.burst++;
+    if (t.autos) counts.autos++;
+    if (t.poke) counts.poke++;
+  }
+  return counts;
+}
+
+const RUNE_PROFILES = {
+  Briar: { primary: 'Press the Attack', secondary: 'Conqueror', mainWhy: 'Helps amplify damage on a focused target during repeated attacks.', altWhy: 'Consider for sustained skirmishes and durable frontlines.', path: 'Precision', note: 'Prioritize reliable access to targets; rune choices depend on role and build.' },
+  Amumu: { primary: 'Aftershock', secondary: 'Conqueror', mainWhy: 'Defensive value after you commit with crowd control.', altWhy: 'A sustained-fight option when you can stay in combat.', path: 'Resolve', note: 'Tank and damage-oriented Amumu setups have different priorities.' },
+  Sylas: { primary: 'Conqueror', secondary: 'Electrocute', mainWhy: 'Fits extended trading and repeated spell rotations.', altWhy: 'A burst-focused option for shorter trades.', path: 'Precision', note: 'Consider how safely you can reach the enemy before committing.' },
+  Ivern: { primary: 'Summon Aery', secondary: 'Guardian', mainWhy: 'Adds value to frequent shielding and supportive play.', altWhy: 'A defensive choice when teammates need peel.', path: 'Sorcery', note: 'These are playstyle options, not patch-verified win-rate leaders.' },
+  Akshan: { primary: 'Press the Attack', secondary: 'Fleet Footwork', mainWhy: 'Rewards repeated autos in favorable trades.', altWhy: 'Helps with sustain and movement into poke lanes.', path: 'Precision' },
+  Warwick: { primary: 'Press the Attack', secondary: 'Conqueror', mainWhy: 'Works with repeated attacks and early duels.', altWhy: 'For longer fights into multiple bruisers.', path: 'Precision' },
+  Lillia: { primary: 'Conqueror', secondary: 'Phase Rush', mainWhy: 'Supports extended fights where abilities repeatedly connect.', altWhy: 'Consider when kiting and escaping matter more.', path: 'Precision' },
+  Mordekaiser: { primary: 'Conqueror', secondary: 'Grasp of the Undying', mainWhy: 'A prolonged melee-fight keystone.', altWhy: 'Situational trading choice into melee lanes.', path: 'Precision' },
+  Orianna: { primary: 'Summon Aery', secondary: 'Phase Rush', mainWhy: 'Offers lane harassment and shield value.', altWhy: 'More movement during extended skirmishes.', path: 'Sorcery' },
+  Rammus: { primary: 'Aftershock', secondary: 'Guardian', mainWhy: 'Good fit for hard engage with defensive scaling.', altWhy: 'A peel-oriented alternative.', path: 'Resolve' },
+  Poppy: { primary: 'Grasp of the Undying', secondary: 'Aftershock', mainWhy: 'A melee trading option with durability.', altWhy: 'Consider for support or jungle engage builds.', path: 'Resolve' },
+  Galio: { primary: 'Aftershock', secondary: 'Phase Rush', mainWhy: 'Supports defensive engage and crowd control.', altWhy: 'Helps reposition against some matchups.', path: 'Resolve' },
+  Vayne: { primary: 'Lethal Tempo', secondary: 'Fleet Footwork', mainWhy: 'Supports prolonged on-hit damage.', altWhy: 'More forgiving into lane poke.', path: 'Precision' },
+};
+
+function recommendRunes(champion, opponent) {
+  const p = RUNE_PROFILES[champion];
+  const enemy = traits(opponent);
+  if (!champion) return { ready: false, title: 'Select your champion', body: 'Choose your pick to see an initial rune direction.' };
+  if (!p) return { ready: false, title: 'Matchup runes not curated yet', body: `${champion} is supported in the team analyzer. A verified champion-specific rune profile still needs to be added.` };
+  let context = !opponent ? 'Select your actual opponent to add lane-specific context.'
+    : enemy.poke ? `${opponent} has poke pressure. Weigh sustain and safe access over greedier damage setups.`
+    : enemy.burst ? `${opponent} has burst threat. Defensive secondary choices and short-trade discipline may matter.`
+    : enemy.tank ? `${opponent} is a durable opponent. Extended-trade setups may be more appropriate.`
+    : enemy.ranged ? `${opponent} is ranged. Consider how you'll survive the approach and control the wave.`
+    : `${opponent} is a closer-range matchup. Think about whose extended trade is stronger.`;
+  return { ready: true, title: p.primary, alternate: p.secondary, path: p.path, mainWhy: p.mainWhy, altWhy: p.altWhy, context, note: p.note || 'Provisional playstyle guide, not verified for the current patch.' };
+}
+
+function matchupTips(champion, opponent) {
+  if (!champion || !opponent) return [
+    { title: 'No guessing', body: 'Choose your champion and the opponent you are actually facing.' },
+    { title: 'Your decision', body: 'Recommendations are always optional and explained.' },
+  ];
+  const e = traits(opponent), you = traits(champion), tips = [];
+  if (e.ranged && !you.ranged) tips.push({ title: 'Respect the approach', body: `${opponent} can threaten you from range. Preserve health until you have a real opening.` });
+  if (e.burst) tips.push({ title: 'Track their burst window', body: 'Short trades may be dangerous when key enemy abilities are available.' });
+  if (e.poke) tips.push({ title: 'Manage poke pressure', body: 'Favor safe farm and avoid taking repeated free hits for small trades.' });
+  if (e.healing) tips.push({ title: 'Sustain matchup', body: 'Evaluate anti-heal later if healing actually becomes a problem; do not rush it blindly.' });
+  if (e.tank) tips.push({ title: 'Longer fights', body: 'Consider sustained damage and whether you have enough time to finish the trade.' });
+  if (you.ranged && !e.ranged) tips.push({ title: 'Range advantage', body: 'Harass when safe, but respect gap closers and gank setup.' });
+  if (tips.length < 2) tips.push({ title: 'Cooldown discipline', body: 'Trade when their important ability is unavailable, not just because they are in range.' });
+  return tips.slice(0, 3);
+}
+
+function itemSuggestions(enemies = []) {
+  const c = analyzeTeam(enemies), out = [];
+  if (!c.total) return [{ title: 'Fill in the enemy team', body: 'Add known enemies to see composition-based options.', kind: 'pending' }];
+  if (c.ap >= 3) out.push({ title: 'Magic resistance', body: `${c.ap} of ${c.total} enemies look primarily magic-oriented. Consider MR items appropriate to your champion.`, kind: 'defense' });
+  if (c.ad >= 3) out.push({ title: 'Armor', body: `${c.ad} of ${c.total} enemies look primarily physical-oriented. Armor may have strong value.`, kind: 'defense' });
+  if (c.healing >= 2) out.push({ title: 'Anti-heal option', body: `${c.healing} opponents have notable sustain in their kits. Think about anti-heal if the match calls for it.`, kind: 'response' });
+  if (c.cc >= 3) out.push({ title: 'CC mitigation', body: `${c.cc} enemies have important crowd control. Tenacity or relevant defensive actives might help, depending on CC type.`, kind: 'response' });
+  if (c.tanks >= 2) out.push({ title: 'Sustained / anti-tank damage', body: `${c.tanks} tanky opponents identified. Value percent-health, penetration, or long-fight tools where suitable.`, kind: 'offense' });
+  if (c.autos >= 3) out.push({ title: 'Anti-auto-attack defense', body: 'Several opponents rely on repeated basic attacks. Armor or attack-speed mitigation may be valuable.', kind: 'defense' });
+  if (c.poke >= 2) out.push({ title: 'Poke resilience', body: 'Multiple ranged poke threats may reward sustain, shielding or reliable engage.', kind: 'response' });
+  if (!out.length) out.push({ title: 'Balanced response', body: 'No single damage or utility category dominates so far. Build for the actual threats that emerge.', kind: 'response' });
+  return out.slice(0, 5);
+}
+
+const PICKS_BY_ROLE = {
+  Jungle: { ad: ['Rammus', 'Amumu'], ap: ['Ivern', 'Jarvan IV'], tank: ['Lillia', 'Brand'], cc: ['Olaf', 'Ivern'], fallback: ['Amumu', 'Briar'] },
+  Top: { ad: ['Malphite', 'Rammus'], ap: ['Galio', 'Dr. Mundo'], tank: ['Gwen', 'Fiora'], cc: ['Olaf', 'Gwen'], fallback: ['Poppy', 'Ornn'] },
+  Mid: { ad: ['Galio', 'Lissandra'], ap: ['Galio', 'Kassadin'], tank: ['Aurelion Sol', 'Cassiopeia'], cc: ['Morgana', 'Sivir'], fallback: ['Orianna', 'Ahri'] },
+  Bot: { ad: ['Nilah', 'Vayne'], ap: ['Sivir', 'Ezreal'], tank: ['Vayne', 'Kog\'Maw'], cc: ['Sivir', 'Ezreal'], fallback: ['Ashe', 'Jinx'] },
+  Support: { ad: ['Braum', 'Taric'], ap: ['Galio', 'Karma'], tank: ['Brand', 'Zyra'], cc: ['Morgana', 'Milio'], fallback: ['Janna', 'Nautilus'] },
+};
+function compositionIdeas(enemies = [], role = 'Jungle') {
+  const c = analyzeTeam(enemies), pool = PICKS_BY_ROLE[role] || PICKS_BY_ROLE.Jungle;
+  if (c.total < 2) return [];
+  let key = 'fallback', reason = 'Flexible picks that offer useful team utility.';
+  if (c.tanks >= 2) { key = 'tank'; reason = 'Multiple frontliners suggest looking at sustained damage or anti-tank kits.'; }
+  else if (c.ad >= 3) { key = 'ad'; reason = 'A physical-heavy team may be vulnerable to armor-focused champions.'; }
+  else if (c.ap >= 3) { key = 'ap'; reason = 'Magic-heavy opponents reward certain defensive and anti-magic kits.'; }
+  else if (c.cc >= 3) { key = 'cc'; reason = 'Heavy crowd control can be answered with protection or self-sufficiency.'; }
+  return [...new Set(pool[key])].slice(0, 2).map(name => ({ name, reason }));
+}
+
+function lpDelta(before, after) {
+  const a = Number(before), b = Number(after);
+  if (!Number.isFinite(a) || !Number.isFinite(b) || String(before).trim() === '' || String(after).trim() === '') return null;
+  return b - a;
+}
+
+function normalizeChampions(apiData) {
+  if (!apiData || typeof apiData !== 'object') return [];
+  return Object.values(apiData).filter(v => v && typeof v.name === 'string').map(v => ({ name: v.name, id: v.id, key: Number(v.key) })).sort((a, b) => a.name.localeCompare(b.name));
+}
+
+function championNames(champions) { return champions.map(c => c.name); }
+
+/** Passive, local-only ranked state machine. Never invent a per-game LP delta. */
+const RANKED_QUEUE = {420:'solo',440:'flex'};
+const PLAYING = new Set(['GameStart','InProgress','Reconnect','PreEndOfGame','WaitingForStats','EndOfGame']);
+const defaultJournal = () => ({records:[],historyByAccount:{},pending:null,account:null,lastPhase:'',status:'Waiting for League'});
+
+const usableRank = r => r && Number.isInteger(r.lp) && Number.isInteger(r.wins) && Number.isInteger(r.losses) && typeof r.tier === 'string' && typeof r.division === 'string';
+const sameDivision = (a,b) => a.tier === b.tier && a.division === b.division;
+const hasPlayed = phase => PLAYING.has(phase);
+const stamped = value => Number.isFinite(Date.parse(value));
+function tickJournal(input, snap, at = new Date().toISOString()) {
+  const state = structuredClone(input || defaultJournal());
+  state.records ||= [];
+  state.historyByAccount ||= {};
+  if (!snap?.connected) { state.status='League client disconnected'; state.lastPhase=''; return state; }
+  const account = String(snap.account || '').trim();
+  if (!account) { state.status='Waiting for account identity'; return state; }
+  if (state.account && state.account !== account) {
+    // Keep each signed-in account's history separately rather than erase it.
+    state.historyByAccount[state.account]=state.records;
+    state.records=state.historyByAccount[account] || []; state.pending=null;
+  }
+  state.account=account;
+  const phase = String(snap.phase || 'None');
+  const queueId = Number(snap.queueId || 0);
+  const queue = RANKED_QUEUE[queueId];
+  const liveRank = queue ? snap.ranked?.[queue] : null;
+  const prevPhase = state.lastPhase;
+  state.lastPhase=phase;
+  const pending = state.pending;
+  const time = stamped(at) ? at : new Date().toISOString();
+  if (pending) {
+    const elapsed = Date.parse(time) - Date.parse(pending.startedAt);
+    if (!Number.isFinite(elapsed) || elapsed > 1000*60*60*3) {
+      state.pending=null;
+      state.status='A match was missed; no guessed LP';
+      return state;
+    }
+    if (pending.account !== account) { state.pending=null; state.status='Account switched'; return state; }
+    if (!pending.played && (phase === 'Lobby' || phase === 'None')) {
+      state.pending=null; state.status='Champ select ended without a match'; return state;
+    }
+    if (hasPlayed(phase)) pending.played = true;
+    if (snap.gameId && !pending.gameId) pending.gameId=String(snap.gameId);
+    if (snap.championId && !pending.championId) pending.championId=snap.championId;
+    if (pending.played) {
+      const rank = snap.ranked?.[pending.queue];
+      if (usableRank(rank)) {
+        const diff = (rank.wins + rank.losses) - (pending.before.wins + pending.before.losses);
+        if (diff === 1) {
+          const won = rank.wins - pending.before.wins === 1 && rank.losses === pending.before.losses;
+          const lost = rank.losses - pending.before.losses === 1 && rank.wins === pending.before.wins;
+          if (won || lost) {
+            const exact = sameDivision(pending.before, rank);
+            const record = {
+              id: `${pending.account}/${pending.queue}/${pending.gameId || pending.startedAt}`,
+              at: time, result:won?'Win':'Loss', queue:pending.queue,
+              championId:pending.championId || null, before:pending.before, after:rank,
+              delta: exact ? rank.lp - pending.before.lp : null,
+              label: exact ? 'exact' : 'rank changed', gameId: pending.gameId || null
+            };
+            if (!state.records.some(r => r.id === record.id)) state.records.push(record);
+            state.historyByAccount[account]=state.records;
+            state.pending=null; state.status='Match recorded automatically';
+            return state;
+          }
+        }
+        if (diff > 1 || diff < 0) {
+          state.pending=null; state.status='Multiple/unmatched ranked updates; skipped rather than guessing LP';
+          return state;
+        }
+      }
+    }
+    state.status = pending.played ? 'Waiting for Riot to publish ranked results' : 'Ranked match armed';
+    return state;
+  }
+  if (phase === 'ChampSelect' && queue && usableRank(liveRank) && prevPhase !== 'ChampSelect') {
+    state.pending={ account,queue,queueId,gameId:snap.gameId?String(snap.gameId):null,championId:snap.championId||null,before:liveRank,played:false,startedAt:time};
+    state.status='Tracking this ranked match';
+    return state;
+  }
+  state.status = queue && phase === 'InProgress' ? 'Opened mid-match; no before-LP snapshot' : 'Connected · monitoring while open';
+  return state;
+}
+function rankText(rank) {
+  return rank && Number.isInteger(rank.lp) ? `${rank.tier} ${rank.division} · ${rank.lp} LP` : 'Unranked / unavailable';
+}
+
+
+
+
+const el = id => document.getElementById(id);
+const esc = input => String(input ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const journalKey = 'lanelite.auto.v2';
+const championCacheKey = 'lanelite.champions.v2';
+const isDesktop = typeof window.__TAURI__?.core?.invoke === 'function';
+const nativeInvoke = window.__TAURI__?.core?.invoke;
+const stateKey = 'lanelite.select.v1';
+const safelyRead = (key, fallback) => { try { const value = JSON.parse(localStorage.getItem(key)); return value ?? fallback; } catch { return fallback; } };
+const safelySave = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); return true; } catch { return false; } };
+let journal = safelyRead(journalKey, defaultJournal());
+if (!journal || !Array.isArray(journal.records)) journal = defaultJournal();
+let live = null;
+let simulated = false;
+let inFlight = false;
+let champions = safelyRead(championCacheKey, FALLBACK_CHAMPIONS.map(name => ({ name, id: null, key: null })));
+if (!Array.isArray(champions) || !champions.length) champions = FALLBACK_CHAMPIONS.map(name => ({ name, id: null, key: null }));
+let championSet = new Set(FALLBACK_CHAMPIONS);
+let currentTab = 'team';
+let selection = safelyRead(stateKey, { champion: '', opponent: '', role: 'Jungle', enemies: ['', '', '', '', ''] });
+if (!selection || typeof selection !== 'object') selection = { champion: '', opponent: '', role: 'Jungle', enemies: ['', '', '', '', ''] };
+if (!Array.isArray(selection.enemies) || selection.enemies.length !== 5) selection.enemies = ['', '', '', '', ''];
+
+function canonicalize(input) {
+  const str = String(input || '').trim().toLowerCase();
+  if (!str) return '';
+  const found = champions.find(c => c.name.toLowerCase() === str);
+  return found?.name || '';
+}
+function selectedEnemies() { return [...new Set(selection.enemies.map(canonicalize).filter(Boolean))]; }
+function chosenChampion() { return canonicalize(selection.champion); }
+function chosenOpponent() { return canonicalize(selection.opponent); }
+function persist() { safelySave(stateKey, selection); }
+function createEnemyInputs() {
+  el('team-inputs').innerHTML = Array.from({ length: 5 }, (_, i) => `<div class="enemy-input"><span class="enemy-number">0${i+1}</span><input aria-label="Enemy champion ${i+1}" data-enemy="${i}" list="champion-list" placeholder="Enemy champion…" autocomplete="off" value="${esc(selection.enemies[i])}" /></div>`).join('');
+  document.querySelectorAll('[data-enemy]').forEach(input => {
+    input.addEventListener('input', () => { selection.enemies[Number(input.dataset.enemy)] = input.value; persist(); refresh(); });
+  });
+}
+function populateDatalist() {
+  el('champion-list').innerHTML = champions.map(c => `<option value="${esc(c.name)}"></option>`).join('');
+  championSet = new Set(champions.map(c=>c.name));
+}
+async function loadChampionCatalog() {
+  // The only external requests in this preview: public champion names from Riot's Data Dragon CDN.
+  try {
+    const versionsResponse = await fetch('https://ddragon.leagueoflegends.com/api/versions.json', { signal: AbortSignal.timeout(6000) });
+    if (!versionsResponse.ok) throw Error('versions unavailable');
+    const versions = await versionsResponse.json();
+    if (!Array.isArray(versions) || typeof versions[0] !== 'string') throw Error('invalid version list');
+    const response = await fetch(`https://ddragon.leagueoflegends.com/cdn/${encodeURIComponent(versions[0])}/data/en_US/champion.json`, { signal: AbortSignal.timeout(6000) });
+    if (!response.ok) throw Error('champions unavailable');
+    const data = await response.json();
+    const parsed = normalizeChampions(data.data);
+    if (!parsed.length) throw Error('invalid champion data');
+    champions = parsed;
+    safelySave(championCacheKey, champions);
+    populateDatalist();
+    if (live?.locked) syncLockedChampion(live);
+  } catch {
+    // Fallback supports offline demo with built-in names; this is deliberately non-blocking.
+  }
+}
+function renderMatchup() {
+  const champion = chosenChampion(), opponent = chosenOpponent();
+  const heading = champion ? (opponent ? `${champion} vs. ${opponent}` : `${champion} vs. ?`) : 'Your next matchup';
+  const hint = !champion ? 'Choose your champion on the left to begin.' : !opponent ? 'Choose the opponent you are actually facing.' : 'Matchup context is based on basic champion traits, not current-patch statistics.';
+  el('matchup-banner').innerHTML = `<div class="banner-icon">${esc(champion ? champion[0] : '?')}</div><div class="banner-main"><div class="banner-kicker">${esc(selection.role.toUpperCase())} / MATCHUP</div><div class="banner-title">${esc(heading)}</div><div class="banner-hint">${esc(hint)}</div></div>`;
+  const r = recommendRunes(champion, opponent);
+  if (!r.ready) el('runes-output').innerHTML = `<div class="empty-title">${esc(r.title)}</div><p class="empty-body">${esc(r.body)}</p>`;
+  else el('runes-output').innerHTML = `<div class="rune-title">${esc(r.title)}</div><div class="rune-path">${esc(r.path)} · Suggested keystone direction</div><div class="rune-copy">${esc(r.mainWhy)}</div><div class="rule"></div><div class="alternate-label">ALTERNATIVE TO CONSIDER</div><div class="alternate-title">${esc(r.alternate)}</div><div class="rune-copy">${esc(r.altWhy)}</div><div class="context-strip">${esc(r.context)}</div><p class="info-footnote">${esc(r.note || '')}</p>`;
+  el('tips-output').innerHTML = matchupTips(champion, opponent).map((tip, i) => `<div class="tip"><div class="tip-num">${String(i+1).padStart(2,'0')}</div><div><div class="tip-title">${esc(tip.title)}</div><div class="tip-text">${esc(tip.body)}</div></div></div>`).join('');
+}
+function renderTeam() {
+  const team = selectedEnemies(), c = analyzeTeam(team);
+  const metrics = [['Magic-oriented', c.ap],['Physical-oriented', c.ad],['Mixed damage',c.mixed],['Hard CC',c.cc],['Sustain',c.healing]];
+  el('team-summary').innerHTML = `<div class="summary-heading"><strong>Known enemy composition</strong><span>${c.total} / 5 champions selected</span></div><div class="bars">${metrics.map(([name, val]) => `<div><div class="bar-label"><span>${esc(name)}</span><span>${val}/${c.total || 5}</span></div><div class="bar-track"><div class="bar-fill" style="width:${Math.min(100,(val/Math.max(5,c.total))*100)}%"></div></div></div>`).join('')}</div><p class="info-footnote">Simplified kit categories. Damage mix and actual build paths can differ; categories aren't measured match statistics.</p>`;
+  el('items-output').innerHTML = itemSuggestions(team).map(item => `<article class="analysis-card"><div class="analysis-tag">${esc(item.kind)}</div><div class="analysis-title">${esc(item.title)}</div><div class="analysis-copy">${esc(item.body)}</div></article>`).join('');
+  const picks = compositionIdeas(team, selection.role);
+  el('counter-output').innerHTML = picks.length ? picks.map(p => `<article class="analysis-card"><div class="analysis-tag">${esc(selection.role)} · situational pick</div><div class="analysis-title">${esc(p.name)}</div><div class="analysis-copy">${esc(p.reason)}</div></article>`).join('') : '<div class="analysis-card"><div class="analysis-title">Add at least two enemies</div><div class="analysis-copy">We need more information to offer meaningful counterpick angles.</div></div>';
+}
+const fmtDelta = n => `${n > 0 ? '+' : ''}${n}`;
+function championNameFromId(id) { return champions.find(c => Number(c.key) === Number(id))?.name || ''; }
+function syncLockedChampion(snap) {
+  if (!snap?.connected) return;
+  if (snap.phase === 'ChampSelect' && !snap.locked) {
+    if (selection.champion) { selection.champion=''; el('champion').value=''; persist(); }
+  }
+  if (!snap.locked || !snap.championId) return;
+  const name = championNameFromId(snap.championId);
+  if (name && selection.champion !== name) { selection.champion=name; el('champion').value=name; persist(); }
+  const roleMap = {TOP:'Top',JUNGLE:'Jungle',MIDDLE:'Mid',BOTTOM:'Bot',UTILITY:'Support'};
+  const role = roleMap[String(snap.role||'').toUpperCase()];
+  if (role && selection.role !== role) { selection.role=role; el('role').value=role; persist(); }
+}
+function updateConnection() {
+  const connected = Boolean(live?.connected);
+  const connection = el('connection');
+  connection.classList.toggle('offline', !connected);
+  el('connection-text').textContent = connected ? `${live.gameName || 'League'} · ${live.phase || 'Lobby'}` : isDesktop ? (live?.status || 'Searching for League…') : simulated ? 'Simulated client' : 'Preview · desktop app required';
+  el('connection-tag').textContent = connected && !simulated ? 'CONNECTED' : simulated ? 'DEMO' : 'LOCAL';
+  el('champion').readOnly = connected && !simulated;
+  el('champion-mode').textContent = connected ? (live.locked ? 'LOCKED · SYNCED' : 'WAITING FOR LOCK') : 'AUTO WHEN LOCKED';
+}
+function renderRanked() {
+  const matches = journal.records || [];
+  const wins = matches.filter(m => m.result === 'Win').length;
+  const losses = matches.filter(m => m.result === 'Loss').length;
+  const exact = matches.filter(m => Number.isInteger(m.delta));
+  const total = exact.reduce((sum,m) => sum+m.delta,0);
+  el('lp-stats').innerHTML = `<div class="stat-card"><div class="stat-label">Tracked ranked matches</div><div class="stat-value">${matches.length}</div></div><div class="stat-card"><div class="stat-label">Confirmed net LP <small>(same division)</small></div><div class="stat-value ${total>=0?'positive':'negative'}">${fmtDelta(total)}</div></div><div class="stat-card"><div class="stat-label">Record</div><div class="stat-value">${wins}<span style="color:#536475;font-size:18px"> / </span>${losses}</div></div>`;
+  const state = journal.status || 'Waiting for the desktop League client';
+  el('sync-heading').textContent = simulated ? 'Simulated ranked client' : live?.connected ? (live.gameName ? `Connected as ${live.gameName}` : 'League connected') : 'No League client detected';
+  el('sync-detail').textContent = simulated ? `Browser-only simulated session. ${state}` : isDesktop ? state : 'Automatic champion and LP sync works in the desktop app. This browser preview cannot read the game client.';
+  el('sync-indicator').textContent = live?.connected ? '●' : '○';
+  el('ranked-source').textContent = simulated ? 'SIMULATION' : live?.connected ? 'LOCAL CLIENT' : 'WAITING';
+  el('solo-current').textContent=rankText(live?.ranked?.solo);
+  el('flex-current').textContent=rankText(live?.ranked?.flex);
+  el('history-output').innerHTML = matches.length ? matches.slice().reverse().slice(0,40).map(m => {
+    const before=rankText(m.before),after=rankText(m.after);
+    const delta=Number.isInteger(m.delta)?`${fmtDelta(m.delta)} LP`:'Rank change';
+    return `<div class="match-row"><div class="match-result ${m.result==='Win'?'win':'loss'}">${esc(m.result)}</div><div class="match-detail">${esc(championNameFromId(m.championId) || 'Ranked match')} <span class="muted">· ${m.queue==='flex'?'Flex':'Solo/Duo'}</span><span class="rank-shift">${esc(before)} → ${esc(after)}</span></div><div class="match-date">${esc(new Date(m.at).toLocaleDateString())}</div><div class="match-delta ${m.delta===null?'unknown':m.delta>=0?'positive':'negative'}">${esc(delta)}</div></div>`;
+  }).join('') : `<div class="history-empty">No verified ranked games yet. Leave LaneLite open from champion select through the post-game LP update.</div>`;
+}
+function refresh() { renderMatchup(); renderTeam(); renderRanked(); }
+function selectTab(name) {
+  currentTab = name;
+  document.querySelectorAll('.tab').forEach(t => { const active = t.dataset.tab === name; t.classList.toggle('active',active); t.setAttribute('aria-current',active?'page':'false'); });
+  document.querySelectorAll('.tab-view').forEach(v => v.classList.toggle('hidden', v.id !== `${name}-view`));
+  el('breadcrumb').textContent = {matchup:'Matchup',team:'Enemy team',ranked:'LP tracker'}[name] || name;
+}
+function syncInputs() {
+  el('champion').value = selection.champion || '';
+  el('opponent').value = selection.opponent || '';
+  el('role').value = ['Jungle','Top','Mid','Bot','Support'].includes(selection.role) ? selection.role : 'Jungle';
+  createEnemyInputs();
+}
+function getCsv() {
+  const csvEscape = v => `"${String(v ?? '').replace(/"/g,'""')}"`;
+  const lines = [['date','queue','result','champion','rank_before','rank_after','lp_delta','classification','game_id'], ...journal.records.map(m=>[m.at,m.queue,m.result,championNameFromId(m.championId),rankText(m.before),rankText(m.after),m.delta??'',m.label,m.gameId??''])];
+  return lines.map(row=>row.map(csvEscape).join(',')).join('\r\n');
+}
+function downloadCsv() {
+  const url = URL.createObjectURL(new Blob([getCsv()], {type:'text/csv;charset=utf-8'}));
+  const a = document.createElement('a'); a.href = url; a.download = 'lanelite-confirmed-ranked.csv'; a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),2000);
+}
+async function pollLeague() {
+  if (!isDesktop || inFlight) return;
+  inFlight=true;
+  try {
+    const directory = safelyRead('lanelite.installPath.v2', '');
+    const snapshot = await nativeInvoke('league_snapshot', {installDir:directory || null});
+    live = snapshot;
+    simulated = false;
+    journal = tickJournal(journal,snapshot);
+    safelySave(journalKey,journal);
+    syncLockedChampion(snapshot);
+    updateConnection(); refresh();
+  } catch {
+    live={connected:false,status:'League integration unavailable'};
+    journal.status='League integration unavailable';
+    updateConnection();renderRanked();
+  } finally { inFlight=false; }
+}
+function simulateRankedGame() {
+  // Same tickJournal used by the Windows app; this merely drives it with labeled fixture data.
+  simulated=true; journal=defaultJournal();
+  const rank=(lp,wins=7,losses=6)=>({tier:'GOLD',division:'II',lp,wins,losses});
+  const fake=(phase,lp,wins=7,extra={}) => ({connected:true,account:'DEMO-ONLY-NOT-A-RIOT-ACCOUNT',gameName:'Demo (not real)',phase,queueId:420,ranked:{solo:rank(lp,wins),flex:null},...extra});
+  for (const snap of [fake('Lobby',43),fake('ChampSelect',43,7),fake('InProgress',43,7,{gameId:'simulated-1',championId:233}),fake('WaitingForStats',43),fake('Lobby',67,8)]) {
+    live=snap; journal=tickJournal(journal,snap);
+  }
+  updateConnection(); refresh();selectTab('ranked');
+}
+function init() {
+  populateDatalist();syncInputs(); updateConnection(); refresh(); selectTab('team');
+  el('champion').addEventListener('input', e => { if (el('champion').readOnly) return; selection.champion=e.target.value; persist(); refresh(); });
+  el('opponent').addEventListener('input', e => { selection.opponent=e.target.value; persist(); refresh(); });
+  el('role').addEventListener('change', e => { selection.role=e.target.value; persist(); refresh(); });
+  document.querySelectorAll('.tab').forEach(tab => tab.addEventListener('click',()=>selectTab(tab.dataset.tab)));
+  el('sample-button').addEventListener('click',()=>{
+    selection={champion:live?.locked?(championNameFromId(live.championId)||''):'Briar',opponent:'Warwick',role:'Jungle',enemies:['Warwick','Ahri','Leona','Jinx','Ornn']};
+    persist();syncInputs();refresh();selectTab('team');
+  });
+  el('install-dir').value = safelyRead('lanelite.installPath.v2','');
+  el('install-save').addEventListener('click',()=>{
+    safelySave('lanelite.installPath.v2',el('install-dir').value.trim());
+    el('install-help').textContent='Folder saved locally; reconnecting…';
+    pollLeague();
+  });
+  el('export-button').addEventListener('click',downloadCsv);
+  el('clear-button').addEventListener('click',()=>{
+    if (!journal.records.length) return;
+    if (!confirm('Clear all locally recorded ranked games? This cannot be undone.')) return;
+    journal.records=[];if (journal.account) journal.historyByAccount[journal.account]=[];safelySave(journalKey,journal);renderRanked();
+  });
+  if (isDesktop) {pollLeague();setInterval(pollLeague,6500);}
+  else {el('demo-actions').classList.remove('hidden');el('simulate-button').addEventListener('click',simulateRankedGame);}
+  loadChampionCatalog().then(refresh);
+}
+init();
+
+</script>
+</body>
+</html>

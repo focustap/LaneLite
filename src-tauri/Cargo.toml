@@ -1,0 +1,20 @@
+[package]
+name = "lanelite"
+version = "0.3.0"
+description = "Local-first League companion with opt-in native client read adapter"
+authors = ["LaneLite prototype"]
+edition = "2021"
+
+[lib]
+name = "lanelite_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["macros"] }

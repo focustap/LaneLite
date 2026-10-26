@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark" />
+  <title>LaneLite · Your quiet League companion</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="logo-row"><div class="logo" aria-hidden="true">L<span>·</span></div><div><div class="logo-name">LaneLite</div><div class="logo-sub">QUIET BY DESIGN</div></div></div>
+      <div class="connection" id="connection"><span class="live-dot"></span><span id="connection-text">Waiting for League</span><span class="connection-tag" id="connection-tag">LOCAL</span></div>
+      <p class="sidebar-label">YOUR MATCH</p>
+      <label for="champion">Your champion <span class="auto-label" id="champion-mode">AUTO WHEN LOCKED</span></label>
+      <input id="champion" list="champion-list" placeholder="Search champion…" autocomplete="off" />
+      <label for="role">Your role</label>
+      <select id="role"><option>Jungle</option><option>Top</option><option>Mid</option><option>Bot</option><option>Support</option></select>
+      <label for="opponent">Your actual opponent</label>
+      <input id="opponent" list="champion-list" placeholder="Select matchup…" autocomplete="off" />
+      <p class="muted micro">Lane opponent is always your call. Your locked champion syncs automatically in the desktop app.</p>
+      <datalist id="champion-list"></datalist>
+      <div class="sidebar-divider"></div>
+      <p class="sidebar-label">OPPONENTS YOU KNOW <span class="auto-label" id="enemy-mode">AUTO IN VISIBLE DRAFT</span></p>
+      <div class="team-inputs" id="team-inputs"></div><div class="draft-status" id="draft-status">Detected enemy picks appear as they lock in. You can edit any slot.</div><button class="mini-link" id="reset-enemies" type="button">Reset slots to auto-detect</button>
+      <button class="secondary-button demo-button" id="sample-button" type="button">Try an example composition <span aria-hidden="true">↗</span></button>
+      <details class="install-config" id="install-config"><summary>League installed elsewhere?</summary><label for="install-dir">League of Legends folder</label><input id="install-dir" placeholder="D:\Games\League of Legends" spellcheck="false" /><button class="secondary-button" id="install-save" type="button">Save folder & reconnect</button><p class="muted micro" id="install-help">One-time setup for nonstandard install locations. Credentials stay in the native app.</p></details>
+      <div class="sidebar-footer"><div class="low-impact-icon">◌</div><div><strong>No background services.</strong><span>Polling stops when you close this window.</span></div></div>
+    </aside>
+    <main class="main">
+      <header class="topbar"><div class="topbar-title">GAME PREP <span class="slash">/</span> <span id="breadcrumb">Matchup</span></div><div class="topbar-right"><span class="version">ALPHA 0.3</span><span class="separator"></span><span class="privacy-status">● Private on this device</span></div></header>
+      <div class="main-content">
+        <div class="hero"><div class="eyebrow">BETTER DECISIONS. LESS NOISE.</div><h1>Just the info you need<span class="period">.</span></h1><p>Champion automatically detected. Rank tracked while open. No overlays, ads, or startup processes.</p></div>
+        <nav class="tabs" aria-label="Companion views">
+          <button class="tab" data-tab="matchup" type="button"><span class="tab-symbol">◇</span> Matchup + builds <span class="experimental">5 CURATED</span></button>
+          <button class="tab active" data-tab="team" type="button"><span class="tab-symbol">♧</span> Enemy team</button>
+          <button class="tab" data-tab="ranked" type="button"><span class="tab-symbol">↗</span> LP tracker</button>
+        </nav>
+        <section id="matchup-view" class="tab-view hidden" aria-labelledby="matchup-heading">
+          <div class="section-heading"><div><div class="eyebrow">MATCHUP INTELLIGENCE</div><h2 id="matchup-heading">Your build. Your matchup.</h2></div><span class="subtle-chip">CURATED BASELINES · PATCH 16.20</span></div>
+          <div id="matchup-banner" class="matchup-banner"></div>
+          <div id="matchup-build-output"></div><div class="cards two-columns"><div class="panel rune-panel"><div class="panel-top"><div class="panel-eyebrow">COMPLETE RUNES</div><span class="tiny-tag">CURATED</span></div><div id="runes-output"></div></div><div class="panel tips-panel"><div class="panel-top"><div class="panel-eyebrow">HOW TO APPROACH IT</div><span class="minimal-icon">⌁</span></div><div id="tips-output"></div></div></div>
+          <div class="info-footnote">Matchup tips and item swaps are LaneLite heuristics, not matchup-specific win-rate statistics. Check the current patch and account for the enemy's actual purchases.</div>
+        </section>
+        <section id="team-view" class="tab-view" aria-labelledby="team-heading">
+          <div class="section-heading"><div><div class="eyebrow">OPPONENT ANALYSIS</div><h2 id="team-heading">Read the composition.</h2></div><span class="subtle-chip">ONLY KNOWN PICKS</span></div>
+          <div id="team-summary" class="team-summary"></div><div class="section-heading compact"><div><h3>Build against this team</h3><p class="muted">Full item slots for supported champions, adjusted for known enemy threats.</p></div></div><div id="team-build-output"></div>
+          <div class="section-heading compact"><div><h3>Situational responses</h3><p class="muted">Options worth considering, not items to force every game.</p></div></div>
+          <div class="cards two-columns" id="items-output"></div>
+          <div class="section-heading compact"><div><h3>Counterpick ideas</h3><p class="muted">Role-filtered alternatives; theorycraft only, not statistical counter rankings.</p></div></div>
+          <div class="cards two-columns" id="counter-output"></div>
+        </section>
+        <section id="ranked-view" class="tab-view hidden" aria-labelledby="ranked-heading">
+          <div class="section-heading"><div><div class="eyebrow">RANKED JOURNAL</div><h2 id="ranked-heading">Every LP matters.</h2></div><span class="subtle-chip">AUTO SYNC · WHILE OPEN</span></div>
+          <div class="lp-stats" id="lp-stats"></div>
+          <div class="panel sync-panel"><div class="panel-top"><div class="panel-eyebrow">LEAGUE CLIENT · LIVE</div><span class="tiny-tag" id="ranked-source">DESKTOP REQUIRED</span></div>
+            <div class="sync-main"><div><h3 id="sync-heading">Waiting for League client</h3><p class="muted" id="sync-detail">Open the desktop version of LaneLite and your League client. No rank numbers to type.</p></div><div class="sync-signal" id="sync-indicator">○</div></div>
+            <div class="sync-rank-row"><div><div class="stat-label">Solo/Duo</div><strong id="solo-current">—</strong></div><div><div class="stat-label">Flex</div><strong id="flex-current">—</strong></div></div>
+            <p class="info-footnote">Matches record automatically only if LaneLite observed the ranked lobby, game, and updated results. LP across rank promotions/demotions is marked as a rank change, not a guessed number.</p>
+            <div id="demo-actions" class="demo-actions hidden"><button class="secondary-button" id="simulate-button" type="button">Preview an automatic match (simulation)</button><span>Browser preview only · Not your Riot account</span></div>
+          </div>
+          <div class="history-heading"><h3>Recent matches</h3><div class="history-actions"><button id="export-button" class="link-button" type="button">Export CSV</button><button id="clear-button" class="link-button danger" type="button">Clear history</button></div></div><div id="history-output" class="history"></div><p class="info-footnote">Only confirmed ranked-game changes are listed. Missing snapshots and ambiguous LP changes are never fabricated.</p>
+        </section>
+        <footer class="footer">LaneLite isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.</footer>
+      </div>
+    </main>
+  </div>
+  <script type="module" src="./app.mjs"></script>
+</body>
+</html>
