@@ -1,6 +1,6 @@
 [package]
 name = "lanelite"
-version = "0.4.1"
+version = "0.4.2"
 description = "Local-first League companion with opt-in native client read adapter"
 authors = ["LaneLite prototype"]
 edition = "2021"

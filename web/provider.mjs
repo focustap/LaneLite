@@ -77,6 +77,48 @@ export function normalizeAnalysis(raw) {
     patch:data.trends?.win?.version || null,countersMeta:data.counters_meta || null};
 }
 
+// The MCP analysis reports ONE popular three-item core, not three complete build
+// combinations. These are paths assembled from the most-played *fourth item*
+// alternatives and separately sampled later items. Never assign a full-path WR.
+export function getProviderBuildPaths(analysis, maxPaths=3) {
+  const base=[];
+  const add=(target,names)=>{
+    for(const name of Array.isArray(names)?names:[]) {
+      if(typeof name==='string' && name.trim() && !target.includes(name) && target.length<6)target.push(name);
+    }
+  };
+  const core=analysis?.core?.items || [];
+  add(base,core.slice(0,1));
+  add(base,analysis?.boots?.items);
+  add(base,core.slice(1));
+  if(!base.length)return [];
+
+  const byGames=rows=>(Array.isArray(rows)?rows:[]).filter(r=>Array.isArray(r?.items))
+    .slice().sort((a,b)=>(b.games||0)-(a.games||0));
+  const seen=new Set(), paths=[];
+  for(const fourth of byGames(analysis.fourth)) {
+    const featured=fourth.items.find(n=>typeof n==='string' && !base.includes(n));
+    if(!featured || seen.has(featured) || base.length>=6)continue;
+    seen.add(featured);
+    const items=base.slice();
+    add(items,[featured]);
+    let fifth=null, sixth=null;
+    for(const row of byGames(analysis.fifth)) {
+      if(row.items.some(n=>typeof n==='string' && !items.includes(n))) {
+        fifth=row;add(items,row.items);break;
+      }
+    }
+    if(items.length<6)for(const row of byGames(analysis.sixth)) {
+      if(row.items.some(n=>typeof n==='string' && !items.includes(n))) {
+        sixth=row;add(items,row.items);break;
+      }
+    }
+    paths.push({items,fourth,fifth,sixth});
+    if(paths.length>=Math.min(3,Math.max(1,maxPaths)))break;
+  }
+  return paths.length?paths:[{items:base,fourth:null,fifth:null,sixth:null}];
+}
+
 export function completeProviderBuild(analysis) {
   if(!analysis?.core?.items?.length)return [];
   const out=[];

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {decodeMcpResult,normalizeAnalysis,opggChampionName} from '../web/provider.mjs';
+import {decodeMcpResult,normalizeAnalysis,getProviderBuildPaths,opggChampionName} from '../web/provider.mjs';
 import {getCounterReference,referenceRows,lolalyticsLinks,summarizePersonal,nextPollDelay} from '../web/stats.mjs';
 
 test('real OP.GG compact response preserves counter perspective and sample sizes',()=>{
@@ -16,6 +16,31 @@ test('real OP.GG compact response preserves counter perspective and sample sizes
   assert.ok(a.core.items.includes('Titanic Hydra'));
   assert.equal(a.runes.primary_rune_names[0],'Press the Attack');
 });
+test('provider build selector offers three distinct paths from the most-played fourth items',()=>{
+  const fixture=JSON.parse(readFileSync(new URL('./fixtures/opgg-briar.json',import.meta.url)));
+  const analysis=normalizeAnalysis(decodeMcpResult(fixture));
+  const paths=getProviderBuildPaths(analysis);
+  assert.equal(paths.length,3);
+  assert.deepEqual(paths.map(p=>p.fourth.items[0]),["Death's Dance",'Infinity Edge','Guardian Angel']);
+  for(const p of paths){
+    assert.equal(p.items.length,6);
+    assert.equal(new Set(p.items).size,p.items.length);
+    assert.ok(p.items.includes(p.fourth.items[0]));
+    assert.ok(p.items.includes('Plated Steelcaps'));
+  }
+  assert.equal(paths[2].fifth.items[0],"Death's Dance"); // avoid buying Guardian Angel twice
+});
+
+test('fewer provider alternatives produce fewer paths, never fabricated full-build statistics',()=>{
+  const core={items:['Item A','Item B','Item C'],games:250,winRate:55};
+  const minimal={core,boots:{items:['Boots']},fourth:[{items:['Item D'],games:120,winRate:50}],fifth:[],sixth:[]};
+  const paths=getProviderBuildPaths(minimal);
+  assert.equal(paths.length,1);
+  assert.deepEqual(paths[0].items,['Item A','Boots','Item B','Item C','Item D']);
+  assert.equal(paths[0].winRate,undefined);
+  assert.equal(getProviderBuildPaths({core:null}).length,0);
+});
+
 test('provider accepts structured and JSON MCP results',()=>{
   assert.deepEqual(decodeMcpResult({structuredContent:{data:1}}),{data:1});
   assert.deepEqual(decodeMcpResult({content:[{type:'text',text:'{"data":2}'}]}),{data:2});
