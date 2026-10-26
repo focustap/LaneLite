@@ -1,7 +1,7 @@
 {
   "name": "lanelite",
   "private": true,
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Quiet, local-first League of Legends match prep prototype",
   "scripts": {
     "tauri": "tauri",
