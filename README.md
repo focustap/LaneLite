@@ -6,12 +6,12 @@ A small Windows League companion. Open it when you want draft help; closing the 
 
 Get the **setup `.exe`** or **LaneLite-Portable.exe** from [Releases](https://github.com/focustap/LaneLite/releases/latest). The installer supplies WebView2 if needed; the portable app needs Microsoft Edge WebView2 Runtime already installed. Releases are unsigned, so Windows may show a publisher warning. Do not run source ZIPs expecting an installer.
 
-## What's in 0.4.3
+## What's in 0.4.4
 
 - Automatic locked-champion detection, lobby/phase monitoring and visible enemy draft picks, preserving the tested automatic LP journal.
 - Locked ally picks appear in a compact strip. Your actual lane opponent remains your choice.
 - Live **OP.GG MCP trial**: champion performance, three difficult/favorable matchups, recommended ally synergies, a popular core/boots set, later-item alternatives, runes and skill order. Works for champion/role combinations supported by the provider; no API key needed for its current public endpoint.
-- Three compact, selectable item paths use the three most-played fourth-item alternatives returned by OP.GG, plus separately sampled later-item choices. These are **not** three full-build win-rate rankings. Fewer paths appear if the provider supplies fewer alternatives.
+- The build section only treats independently sampled **different three-item cores** as different builds (at least two core purchases must differ). The current OP.GG MCP response typically returns just one core, so LaneLite now shows one honest popular core and links directly to OP.GG's full core-build table. Individually sampled fourth-to-sixth items remain optional suggestions, never fabricated full builds. Future multi-core provider responses can supply up to three genuinely different, ranked cores.
 - Sample counts, source, fetch time and provider patch are shown. Unreturned patch information stays unknown. These are role baselines, not automatic opponent-specific rune optimization or a predicted lobby win chance.
 - Dated LoLalytics counter references for Briar, Amumu, Lillia, Warwick jungle and Sylas mid, plus contextual links for other champions. **No use of LoLalytics' restricted private API.** Fixed references carry their actual patch; some are 16.20 and should not be treated as current.
 - Optional personal ally results from recent local ranked history, kept behind a details section and loaded on request. Small descriptive samples, not population synergy claims.
