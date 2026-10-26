@@ -1,64 +1,59 @@
-# LaneLite v0.3 — lightweight, local League companion
+# LaneLite
 
-## Confirmed in v0.2 on the user's Windows machine
-- Successfully connected to their running League client.
-- Automatically read their rank and LP.
-- Automatically selected Briar when locked in.
-- After a real ranked win, automatically logged +20 LP and a 1-0 journal.
+A small Windows League companion. Open it when you want draft help; closing the window exits the app. No overlay, ads, tray service, startup task, telemetry or account login.
 
-These are user-verified outcomes for **v0.2**; the new features introduced in **v0.3** below have **not yet been confirmed in their own live League client**.
+## Download
 
-## New in v0.3
+Get the **setup `.exe`** or **LaneLite-Portable.exe** from [Releases](https://github.com/focustap/LaneLite/releases/latest). The installer supplies WebView2 if needed; the portable app needs Microsoft Edge WebView2 Runtime already installed. Releases are unsigned, so Windows may show a publisher warning. Do not run source ZIPs expecting an installer.
 
-1. **Auto enemy picks in champion select.** Native Rust adapter reads `/lol-champ-select/v1/session` in supported visible draft queues (Normal Draft 400, Ranked Solo 420, Ranked Flex 440, Clash Draft 700) and returns only `championId` values for the 5 enemy slots. Never reads `pickIntent`. For enemy cell actions marked pending, holds the pick until the action is `completed`. **Does not expose hidden enemy champions** from ARAM, blind modes or unknown queues. Polls every 6.5 seconds while LaneLite is open. Existing editable sidebar enemy slots remain, and manually edited slots are not overwritten during that draft. Click **Reset slots to auto-detect** to resume syncing.
-2. **Full six-item build paths + full rune pages** for a curated first batch: Briar, Amumu, Lillia, Warwick jungle; Sylas mid. Uses manually curated patch **16.20** references, researched **October 13, 2026**. For every pick, shows the actual six named items, keystone, primary four runes, secondary two, shards, and skill max. Briar also has a separate bruiser-vs-frontline route. The curated reference links are in the app. **These are fixed baselines, not a licensed live statistics feed**. We don't calculate or claim champion-vs-champion win rates.
-3. **Team-dependent choices**: Enemy-team damage/CC/tank/healing profile can change boots, a defense slot, Briar's Lord Dominik's Regards to Mortal Reminder against enough healing, etc. Every swap is labeled and explained, and comes from a transparent, rule-based decision, not statistical optimization. Actual item purchases in the game can matter more than draft picks.
-4. **Riot Data Dragon** supplies current champion names, latest known version, item icon IDs, rune artwork, and a warning if the curated build patch differs from the current live patch. The app does not scrape Mobalytics; source links are for checking the references, with no bulk ingestion.
-5. **LP history is preserved from v0.2.** Both versions use `lanelite.auto.v2` for the journal localStorage. No extra service, overlays, startup tasks or injections.
+## What's in 0.4
 
-## Windows update instructions
+- Automatic locked-champion detection, lobby/phase monitoring and visible enemy draft picks, preserving the tested automatic LP journal.
+- Locked ally picks appear in a compact strip. Your actual lane opponent remains your choice.
+- Live **OP.GG MCP trial**: champion performance, three difficult/favorable matchups, recommended ally synergies, a popular core/boots set, later-item alternatives, runes and skill order. Works for champion/role combinations supported by the provider; no API key needed for its current public endpoint.
+- Sample counts, source, fetch time and provider patch are shown. Unreturned patch information stays unknown. These are role baselines, not automatic opponent-specific rune optimization or a predicted lobby win chance.
+- Dated LoLalytics counter references for Briar, Amumu, Lillia, Warwick jungle and Sylas mid, plus contextual links for other champions. **No use of LoLalytics' restricted private API.** Fixed references carry their actual patch; some are 16.20 and should not be treated as current.
+- Optional personal ally results from recent local ranked history, kept behind a details section and loaded on request. Small descriptive samples, not population synergy claims.
+- 30-minute stats cache, capped at 12 champion/role combinations. League polling: 2.5s in draft, 4s around results, 20s in game, 10s idle, 15s disconnected. Everything stops when the window closes.
 
-Close LaneLite. Extract this new source ZIP, open PowerShell in its `LaneLite` folder (the one containing `package.json`), then run:
+## Data sources
+
+| Source | Used for | Scope |
+| --- | --- | --- |
+| Local League Client API | Locked champion/allies, visible enemy picks, phases, rank/LP snapshots, optional recent history | Read-only, `127.0.0.1` only; no account data sent externally |
+| OP.GG official MCP endpoint | Counter examples, synergies, core/items/runes/skills | Public trial; only champion/role arguments; default ranked tier/region scope |
+| LoLalytics public counter pages | Small dated references and links | Selected pairs only; fixed patch labels; no restricted API access |
+| Riot Data Dragon | Champion names, portraits, item and rune icons | Public CDN |
+| Riot public API | Future provider option for account history/rank | Not configured in this release; no Riot API key is embedded |
+
+OP.GG's official MCP implementation is documented at https://github.com/opgginc/opgg-mcp and currently publishes `https://mcp-api.op.gg/mcp`. Endpoint availability and permission to redistribute provider data can change; this personal trial is not a claim of a commercial data license. LaneLite does not bulk harvest the dataset. Disable live requests in **Connection & data**. The app continues to show references and local LP history if the provider fails.
+
+OP.GG sometimes returns rounded rates, so the UI does not imply extra precision. The matchup rates always use the selected champion's `my_win_rate`, including difficult matchups. Synergy rates describe joint results in the provider's sample, not a causal improvement. Later completed-item rates have survival/selection bias; they are not proof that an item causes wins. LoLalytics Δ2 is a normalized matchup metric and is not mixed with OP.GG raw win rates.
+
+## Keep your history
+
+The app identifier remains **`com.lanelite.prototype`** and the journal key remains **`lanelite.auto.v2`**. Close the old version before opening this one. Local history stays on the PC and is not pushed to GitHub. LP differences are recorded only after observing a ranked game and its updated rank. Promotions, missed games and ambiguous updates are handled conservatively.
+
+The core connection, rank/LP, Briar lock-in and an automatic +20 LP result were verified by the user on Windows in v0.2; v0.3 was also reported working. New 0.4 integrations are covered by tests and Windows CI, but still need a live League draft on the user's machine. Local recent-history availability depends on the unsupported client endpoint.
+
+## Develop
+
+Install Node.js, Rust stable and Visual Studio C++ Build Tools (Desktop development with C++), then:
 
 ```powershell
-npm install
+npm ci
+npm test
 npm run desktop
 ```
 
-Rust and Visual Studio C++ Build Tools were already installed for v0.2 and do **not** need reinstalling. First run compiles the updated native adapter. If the version still reads 0.2, close the previous LaneLite window and launch the app from this v0.3 folder.
+For an installer: `npm run desktop:build -- --bundles nsis`. GitHub Actions runs JavaScript and native Rust tests, compiles Windows executables, uploads artifacts, and publishes a versioned release. SHA256SUMS.txt accompanies the downloads. Every push to `main` runs the pipeline.
 
-Build a standalone installer with `npm run desktop:build` (Windows machine required). ZIP contains editable **source code**, not a precompiled `.exe`.
+`LaneLite_v04_Demo.html` is a self-contained browser preview; it uses dated references and cannot connect to League or call native OP.GG commands. The simulated LP example is labeled. Run `python tools_make_demo.py` to regenerate it. Earlier demos are retained as historical files.
 
-## Browser demo
+## Security and policy
 
-`LaneLite_v03_Demo.html` is an offline-usable self-contained HTML preview. Click *Try an example composition* to see the new six-item Briar build, situational changes, and full runes. The LP tracker button runs a **simulation**, not a real Riot account. The browser preview **cannot** auto-detect the League client or enemy champions, which need the native app.
+LCU credentials never enter JavaScript, logs or exports. The local adapter uses fixed read-only routes and accepts Riot's self-signed certificate only for hardcoded localhost requests. OP.GG uses a separate client with normal certificate validation and a fixed public endpoint. No game-memory access, injection, hidden enemy scouting, automatic actions or rune imports. Draft detection is limited to visible draft queues 400, 420, 440 and 700.
 
-## Privacy, client and data limitations
+Riot's client API is unsupported and may change. This project does not claim Riot approval; review https://developer.riotgames.com/docs/lol and Riot developer policies before broader distribution.
 
-- Local `lockfile` password is read **only by native Rust** and never forwarded to the JavaScript UI, logs or CSV. All League calls stay on `https://127.0.0.1`. No reads from game memory, no injection, no writes to game state, no action clicks or automatic rune imports.
-- The read-only League Client API is **unsupported and can change**, and v0.3 enemy-pick behavior still needs testing on a real ranked draft. Polling stops when the window closes.
-- Changing Riot accounts triggers the existing tracker isolation. Keep the app open to capture pre-/post-match LP snapshots. Rank changes where precise LP can't be computed remain marked unknown, not guessed.
-- The auto-enemy feature is intentionally limited to **enemy champions visible in champion select**. It does not attempt hidden pick scouting.
-- Curated baseline items and matchup heuristics are not up-to-date live performance rankings. No claim of being statistically optimal. Test in practice and confirm Riot policy before distribution.
-- Third-party player-facing tools using the League Client API must be registered/reviewed under Riot's developer policies before distribution. This prototype does **not** claim approval. Details: https://developer.riotgames.com/docs/lol and https://support-developer.riotgames.com/hc/en-us/articles/22698591841939-General-Policies
-
-## Run tests
-
-```powershell
-npm test
-```
-
-Included JavaScript tests verify that v0.2 LP tracker behavior is unchanged and test composition-dependent build paths, 6 distinct items, no invented profiles for unsupported roles, and Data Dragon item/rune mapping. Rust has additional enemy-team visibility/unit tests, but we could not compile or run them in this environment. Use `cargo test` inside `src-tauri` from a Windows Rust shell to run those tests if desired.
-
-## Main files
-
-- `src-tauri/src/lib.rs` — local League snapshots, ranked stats, *visible enemy pick IDs*.
-- `web/app.mjs` — UI, local auto-sync, build panels, Data Dragon lookups.
-- `web/builds.mjs` — curated item/rune baselines and team-dependent adjustments.
-- `web/logic.mjs` — champion traits, matchup tips, composition/counterpick ideas.
-- `web/tracker.mjs` — unchanged LP reducer and journal logic.
-- `tests/*.test.mjs` — pure regression tests.
-
-Required legal notice also appears in the app UI:
-
-> LaneLite isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.
+LaneLite isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.
