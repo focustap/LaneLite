@@ -2,7 +2,7 @@ import { FALLBACK_CHAMPIONS, analyzeTeam, itemSuggestions, matchupTips, recommen
 import { tickJournal, defaultJournal, rankText } from './tracker.mjs';
 import { getBuildPlan, mapItemCatalog, mapRuneCatalog, REFERENCE_PATCH } from './builds.mjs';
 import { getCounterReference, referenceRows, lolalyticsLinks, summarizePersonal, nextPollDelay } from './stats.mjs';
-import { decodeMcpResult, normalizeAnalysis, opggChampionName, opggPosition } from './provider.mjs';
+import { decodeMcpResult, normalizeAnalysis, getProviderBuildPaths, opggChampionName, opggPosition } from './provider.mjs';
 
 const el = id => document.getElementById(id);
 const esc = input => String(input ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -29,6 +29,7 @@ const statsAttemptAt=new Map();
 let providerBusy=false;
 let providerError='';
 let providerKey='';
+const selectedBuildByKey=new Map();
 let personal={account:null,matches:[]};
 let personalMessage='Load your recent ranked games to see your own results with each ally.';
 let personalBusy=false;
@@ -114,11 +115,26 @@ function renderStatistics() {
   }));
 }
 function renderProviderBuild(a,champion) {
-  const rows=[...(a.core?.items || []),...(a.boots?.items || [])];
-  if(!rows.length)return null;
-  const card=name=>`<div class="build-slot"><div class="slot-icon">${itemIcon(name)}</div><div class="slot-meta"><strong>${esc(name)}</strong></div></div>`;
+  const paths=getProviderBuildPaths(a);
+  if(!paths.length)return null;
+  const active=Math.min(selectedBuildByKey.get(statsKey()) || 0,paths.length-1);
+  const path=paths[active];
+  const card=name=>'<div class="build-slot"><div class="slot-icon">'+itemIcon(name)+'</div><div class="slot-meta"><strong>'+esc(name)+'</strong></div></div>';
+  const choiceButtons=paths.length<2?'':'<div class="build-choice-tabs" role="group" aria-label="Choose a later-item path">'+paths.map((p,i)=>
+    '<button type="button" class="build-choice '+(active===i?'active':'')+'" data-build-path="'+i+'" aria-pressed="'+(active===i)+'"><strong>'+(i+1)+'. '+esc(p.fourth?.items?.[0] || 'Option')+'</strong><small>'+countFmt(p.fourth?.games)+' fourth-item games</small></button>'
+  ).join('')+'</div>';
   const options=[['4th item',a.fourth],['5th item',a.fifth],['6th item',a.sixth]];
-  return `<div class="build-panel"><div class="build-head"><div><div class="panel-eyebrow">${esc(champion)} · OP.GG TRIAL</div><h3>Popular core + boots</h3></div><span class="tiny-tag">${a.core?countFmt(a.core.games):'—'} CORE GAMES</span></div><div class="item-slots provider-slots">${rows.map(card).join('')}</div><p class="build-subnote">Core-set win rate ${pct(a.core?.winRate)}. Boots are sampled separately. Completed-item win rates favor games that lasted long enough to buy them.</p><details class="alt-build"><summary>Later items + full skill order</summary><div class="later-options">${options.map(([label,list])=>`<div><strong>${label}</strong>${(list||[]).slice(0,3).map(row=>`<p>${esc(row.items.join(' + '))}<small>${pct(row.winRate)} · ${countFmt(row.games)} games</small></p>`).join('') || '<p>No sample returned</p>'}</div>`).join('')}</div><p class="micro muted">Skill order: ${esc(a.skills.join(' → ') || 'Not returned')}</p></details></div>`;
+  const alternatives='<details class="alt-build"><summary>More later items + full skill order</summary><div class="later-options">'+options.map(([label,list])=>
+    '<div><strong>'+label+'</strong>'+((list||[]).slice(0,3).map(row=>'<p>'+esc(row.items.join(' + '))+'<small>'+pct(row.winRate)+' · '+countFmt(row.games)+' games</small></p>').join('') || '<p>No sample returned</p>')+'</div>'
+  ).join('')+'</div><p class="micro muted">Skill order: '+esc(a.skills.join(' → ') || 'Not returned')+'</p></details>';
+  const countNote=path.fourth
+    ? 'Selected 4th item: '+countFmt(path.fourth.games)+' games · '+pct(path.fourth.winRate)+' WR. Later picks are independent samples.'
+    : 'No distinct fourth-item alternatives were supplied for this champion and role.';
+  return '<div class="build-panel"><div class="build-head"><div><div class="panel-eyebrow">'+esc(champion)+' · OP.GG LIVE</div><h3>'+(paths.length>1?'Top '+paths.length+' fourth-item paths':'Popular core + boots')+'</h3></div><span class="tiny-tag">'+countFmt(a.core?.games)+' CORE GAMES</span></div>'
+    +choiceButtons+'<div class="item-slots provider-slots">'+path.items.map(card).join('')+'</div>'
+    +(path.items.length<6?'<p class="build-subnote">Only '+path.items.length+' distinct items were returned for this path.</p>':'')
+    +'<p class="build-subnote">Core win rate '+pct(a.core?.winRate)+' · '+countNote+' Ranked by the popularity of the <strong>individual fourth item</strong>, not by full-build win rate. Core, boots and later items use separate samples.</p>'
+    +alternatives+'</div>';
 }
 async function loadPersonal() {
   if(!isDesktop || !live?.connected || personalBusy)return;
@@ -371,6 +387,14 @@ function init() {
     event.preventDefault();
     try{await nativeInvoke('plugin:opener|open_url',{url:link.href});}
     catch{el('stats-status').textContent='Could not open the source. Copy this link into your browser: '+link.href;}
+  });
+  document.addEventListener('click',event=>{
+    const button=event.target.closest?.('[data-build-path]');
+    if(!button)return;
+    const index=Number(button.dataset.buildPath);
+    if(!Number.isInteger(index) || index<0 || index>2)return;
+    selectedBuildByKey.set(statsKey(),index);
+    renderMatchup();renderTeam();
   });
   populateDatalist();syncInputs(); updateConnection(); refresh(); selectTab('team');
   el('champion').addEventListener('input', e => { if (el('champion').readOnly) return; selection.champion=e.target.value; persist(); refresh(); });
