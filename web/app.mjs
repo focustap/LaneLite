@@ -3,6 +3,7 @@ import { tickJournal, defaultJournal, rankText } from './tracker.mjs';
 import { getBuildPlan, mapItemCatalog, mapRuneCatalog, REFERENCE_PATCH } from './builds.mjs';
 import { getCounterReference, referenceRows, lolalyticsLinks, summarizePersonal, nextPollDelay } from './stats.mjs';
 import { decodeMcpResult, normalizeAnalysis, getProviderBuildPaths, opggChampionName, opggPosition } from './provider.mjs';
+import { getVerifiedCoreBuilds } from './verified-cores.mjs';
 
 const el = id => document.getElementById(id);
 const esc = input => String(input ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -114,30 +115,44 @@ function renderStatistics() {
     selection.opponent=button.dataset.matchup;el('opponent').value=selection.opponent;persist();refresh();
   }));
 }
-function renderProviderBuild(a,champion) {
-  const paths=getProviderBuildPaths(a);
+function renderProviderBuild(a,champion,role) {
+  const verified=getVerifiedCoreBuilds(champion,role);
+  const paths=verified
+    ? verified.cores.map(core=>({core}))
+    : getProviderBuildPaths(a);
   if(!paths.length)return null;
   const active=Math.min(selectedBuildByKey.get(statsKey()) || 0,paths.length-1);
-  const path=paths[active],core=path.core;
-  const sourceSlug=opggChampionName(champion).toLowerCase().replaceAll('_','');
-  const fullCoreUrl='https://op.gg/lol/champions/'+encodeURIComponent(sourceSlug)+'/items';
-  const card=(name,label)=>'<div class="build-slot"><div class="slot-icon">'+itemIcon(name)+'</div><div class="slot-meta"><span class="slot-number">'+esc(label)+'</span><strong>'+esc(name)+'</strong></div></div>';
-  const selectors=paths.length>1?'<div class="build-choice-tabs" role="group" aria-label="Distinct sampled core builds">'+paths.map((p,i)=>
-    '<button type="button" class="build-choice '+(active===i?'active':'')+'" data-build-path="'+i+'" aria-pressed="'+(active===i)+'"><strong>'+esc(p.core.items.join(' · '))+'</strong><small>'+countFmt(p.core.games)+' games · '+pct(p.core.winRate)+' core WR</small></button>'
-  ).join('')+'</div>':'';
-  const options=[['4th item',a.fourth],['5th item',a.fifth],['6th item',a.sixth]];
-  const additional='<details class="alt-build"><summary>Later item options (separately sampled)</summary><div class="later-options">'+options.map(([label,list])=>
-    '<div><strong>'+label+'</strong>'+((list||[]).slice(0,3).map(row=>'<p>'+esc(row.items.join(' + '))+'<small>'+pct(row.winRate)+' · '+countFmt(row.games)+' games</small></p>').join('') || '<p>No sample returned</p>')+'</div>'
-  ).join('')+'</div><p class="micro muted">Skill order: '+esc(a.skills.join(' → ') || 'Not returned')+'</p></details>';
-  const unavailable=paths.length===1?'<p class="build-subnote">OP.GG MCP currently supplies only one sampled core for this champion/role. Showing slight item swaps as extra full builds would be misleading.</p>':'';
-  const coreCards=core.items.map((name,i)=>card(name,'CORE '+(i+1))).join('');
-  const boots=(a.boots?.items || []).filter(n=>!core.items.includes(n)).map(name=>card(name,'BOOTS')).join('');
-  return '<div class="build-panel"><div class="build-head"><div><div class="panel-eyebrow">'+esc(champion)+' · OP.GG LIVE</div><h3>'+(paths.length>1?paths.length+' distinct core builds':'Popular core build')+'</h3></div><span class="tiny-tag">'+countFmt(core.games)+' CORE GAMES</span></div>'
-    +selectors+'<div class="item-slots provider-slots">'+coreCards+boots+'</div>'
-    +'<p class="build-subnote">This <strong>three-item core</strong> was played together in '+countFmt(core.games)+' games with '+pct(core.winRate)+' win rate. Boots are sampled separately; this is not a measured six-item build.</p>'
-    +unavailable+'<p class="build-source"><a href="'+esc(fullCoreUrl)+'" target="_blank" rel="noopener noreferrer">Compare different full cores on OP.GG ↗</a> · Source patch '+esc(a.patch || 'unknown')+'</p>'
-    +additional+'</div>';
+  const core=paths[active].core;
+  const snapshot=Boolean(verified);
+  const itemCard=(name,label)=>'<div class="build-slot"><div class="slot-icon">'+itemIcon(name)+'</div><div class="slot-meta"><span class="slot-number">'+esc(label)+'</span><strong>'+esc(name)+'</strong></div></div>';
+  const choiceButtons=paths.length<2?'':'<div class="build-choice-tabs" role="group" aria-label="Choose a real three-item core build">'
+    +paths.map((p,i)=>{
+      const b=p.core;
+      const names=b.items.map(n=>'<span class="choice-item" title="'+esc(n)+'">'+itemIcon(n)+'</span>').join('');
+      return '<button type="button" class="build-choice '+(i===active?'active':'')+'" data-build-path="'+i+'" aria-pressed="'+(i===active)+'"><strong>'+(i+1)+'. '+esc(b.label || b.items.join(' / '))+'</strong><span class="choice-icons">'+names+'</span><small>'+countFmt(b.games)+' games · '+pct(b.winRate)+' WR</small></button>';
+    }).join('')+'</div>';
+  const options=[['4th item',a?.fourth],['5th item',a?.fifth],['6th item',a?.sixth]];
+  const extra=a?'<details class="alt-build"><summary>Later item choices (separate samples)</summary><div class="later-options">'
+    +options.map(([label,list])=>'<div><strong>'+label+'</strong>'+((list||[]).slice(0,3).map(row=>'<p>'+esc(row.items.join(' + '))+'<small>'+pct(row.winRate)+' · '+countFmt(row.games)+' games</small></p>').join('') || '<p>No sample returned</p>')+'</div>').join('')
+    +'</div><p class="micro muted">Skill order: '+esc(a.skills.join(' → ') || 'Not returned')+'</p></details>':'';
+  const bootName=(a?.boots?.items || []).find(n=>!core.items.includes(n)) || (snapshot?verified.boots:null);
+  const items=core.items.map((n,i)=>itemCard(n,'CORE '+(i+1))).join('')+(bootName?itemCard(bootName,'BOOTS'):'');
+  const sourceNote=snapshot
+    ? 'OP.GG · Patch '+esc(verified.patch)+' · captured '+esc(verified.captured)+' · '+esc(verified.scope)
+    : 'OP.GG MCP · Patch '+esc(a?.patch || 'unknown')+' · live core';
+  const outdated=verified && a?.patch && a.patch!==verified.patch
+    ? '<p class="build-subnote patch-warning">Historical build data: the live provider is on patch '+esc(a.patch)+'. Treat these paths as references until updated.</p>'
+    : '';
+  const info=snapshot
+    ? 'Each option is a <strong>different three-item core actually played together</strong>, ranked by its recorded game count. The source snapshot is not live.'
+    : 'The API supplied one jointly sampled core, not three. Later item alternatives are not separate builds.';
+  return '<div class="build-panel"><div class="build-head"><div><div class="panel-eyebrow">'+esc(champion)+' · '+esc(role.toUpperCase())+'</div><h3>'+(paths.length>1?paths.length+' real core builds':'Most-played core')+'</h3></div><span class="tiny-tag">'+(snapshot?'VERIFIED SNAPSHOT':'LIVE MCP')+'</span></div>'
+    +choiceButtons+'<div class="item-slots provider-slots">'+items+'</div>'
+    +'<p class="build-subnote"><strong>'+esc(core.label || 'Selected core')+'</strong> · '+countFmt(core.games)+' jointly sampled games · '+pct(core.winRate)+' win rate. Boots and later items are not included in that win rate.</p>'
+    +'<p class="build-source">'+sourceNote+'</p>'+outdated
+    +'<p class="build-subnote">'+info+'</p>'+extra+'</div>';
 }
+
 async function loadPersonal() {
   if(!isDesktop || !live?.connected || personalBusy)return;
   personalBusy=true;personalMessage='Loading recent ranked games…';renderPersonal();
@@ -211,7 +226,8 @@ function runeIcon(name) {
 function renderBuild(champion, role, enemies, compact=false) {
   if (!champion) return `<div class="build-empty">Lock a champion to see an actual six-item path. You can also select one manually in the browser demo.</div>`;
   const provider=providerAnalysis();
-  if(provider){const html=renderProviderBuild(provider,champion);if(html)return html;}
+  const sourced=renderProviderBuild(provider,champion,role);
+  if(sourced)return sourced;
   const plan=getBuildPlan(champion,role,enemies);
   if (!plan) return `<div class="build-empty">No curated ${esc(role)} build for ${esc(champion)} yet. We won't generate a fake build. Currently supported: Briar, Amumu, Lillia and Warwick jungle; Sylas mid.</div>`;
   const changed=new Map(plan.reasons.filter(r=>plan.items.includes(r.item)).map(r=>[r.item,r]));
