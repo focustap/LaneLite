@@ -16,28 +16,43 @@ test('real OP.GG compact response preserves counter perspective and sample sizes
   assert.ok(a.core.items.includes('Titanic Hydra'));
   assert.equal(a.runes.primary_rune_names[0],'Press the Attack');
 });
-test('provider build selector offers three distinct paths from the most-played fourth items',()=>{
+test('single OP.GG core never masquerades as three different builds',()=>{
   const fixture=JSON.parse(readFileSync(new URL('./fixtures/opgg-briar.json',import.meta.url)));
   const analysis=normalizeAnalysis(decodeMcpResult(fixture));
   const paths=getProviderBuildPaths(analysis);
-  assert.equal(paths.length,3);
-  assert.deepEqual(paths.map(p=>p.fourth.items[0]),["Death's Dance",'Infinity Edge','Guardian Angel']);
-  for(const p of paths){
-    assert.equal(p.items.length,6);
-    assert.equal(new Set(p.items).size,p.items.length);
-    assert.ok(p.items.includes(p.fourth.items[0]));
-    assert.ok(p.items.includes('Plated Steelcaps'));
-  }
-  assert.equal(paths[2].fifth.items[0],"Death's Dance"); // avoid buying Guardian Angel twice
+  assert.equal(paths.length,1);
+  assert.deepEqual(paths[0].core.items,['The Collector','Titanic Hydra',"Lord Dominik's Regards"]);
+  assert.ok(paths[0].items.includes('Plated Steelcaps'));
+  assert.equal(paths[0].items.length,4);
+  assert.equal(paths[0].winRate,undefined);
 });
 
-test('fewer provider alternatives produce fewer paths, never fabricated full-build statistics',()=>{
+test('multiple genuinely distinct, independently sampled cores can be selected',()=>{
+  const rows=[
+    {ids_names:['Collector','Titanic','LDR'],play:4000,win:2100},
+    {ids_names:['Collector','Profane','LDR'],play:3000,win:1700}, // only one different: exclude
+    {ids_names:['Blade of The Ruined King','Black Cleaver',"Death's Dance"],play:2000,win:1100},
+    {ids_names:['Titanic','Black Cleaver',"Death's Dance"],play:1700,win:950}, // only one different from bruiser: exclude
+    {ids_names:['Sundered Sky','Sterak','Trinity Force'],play:900,win:500}
+  ];
+  const a=normalizeAnalysis({data:{summary:{average_stats:{play:15000}},core_items:rows,boots:{ids_names:['Boots'],play:5000,win:2600}}});
+  const paths=getProviderBuildPaths(a);
+  assert.equal(a.cores.length,5);
+  assert.equal(paths.length,3);
+  assert.deepEqual(paths.map(p=>p.core.games),[4000,2000,900]);
+  for(const p of paths){
+    assert.equal(p.items.length,4); // jointly sampled core + separately sampled boots
+    assert.equal(new Set(p.items).size,4);
+    assert.equal(p.winRate,undefined); // no fabricated 6-item WR
+  }
+});
+
+test('late item swaps alone are not independent full builds',()=>{
   const core={items:['Item A','Item B','Item C'],games:250,winRate:55};
   const minimal={core,boots:{items:['Boots']},fourth:[{items:['Item D'],games:120,winRate:50}],fifth:[],sixth:[]};
   const paths=getProviderBuildPaths(minimal);
   assert.equal(paths.length,1);
-  assert.deepEqual(paths[0].items,['Item A','Boots','Item B','Item C','Item D']);
-  assert.equal(paths[0].winRate,undefined);
+  assert.deepEqual(paths[0].items,['Item A','Item B','Item C','Boots']);
   assert.equal(getProviderBuildPaths({core:null}).length,0);
 });
 

@@ -67,56 +67,44 @@ export function normalizeAnalysis(raw) {
     items:row.ids_names,ids:row.ids || [],games:row.play,
     winRate:count(row.win)!==null && row.win<=row.play ? 100*row.win/row.play : null
   }:null;
+  const coreRows=(Array.isArray(data.core_items)?data.core_items:[data.core_items]).map(item).filter(Boolean);
   const summary=data.summary.average_stats || {};
   return {champion:raw.champion,position:raw.position,winRate:rate(summary.win_rate),games:count(summary.play),
     pickRate:rate(summary.pick_rate),banRate:rate(summary.ban_rate),weak:counters(data.weak_counters),strong:counters(data.strong_counters),
-    synergies,core:item(data.core_items),boots:item(data.boots),starter:item(data.starter_items),
+    synergies,core:coreRows[0] || null,cores:coreRows,boots:item(data.boots),starter:item(data.starter_items),
     fourth:(data.fourth_items || []).map(item).filter(Boolean),fifth:(data.fifth_items || []).map(item).filter(Boolean),
     sixth:(data.sixth_items || []).map(item).filter(Boolean),
     runes:data.runes || null,skills:data.skills?.order || [],
     patch:data.trends?.win?.version || null,countersMeta:data.counters_meta || null};
 }
 
-// The MCP analysis reports ONE popular three-item core, not three complete build
-// combinations. These are paths assembled from the most-played *fourth item*
-// alternatives and separately sampled later items. Never assign a full-path WR.
+// A ranked build must have its OWN jointly sampled core. Individually sampled
+// fourth/fifth/sixth items are NOT independent builds and are kept as separate options.
+// The current MCP response normally returns just one core. If a provider starts
+// returning multiple core combinations, show only meaningfully different ones.
 export function getProviderBuildPaths(analysis, maxPaths=3) {
-  const base=[];
-  const add=(target,names)=>{
-    for(const name of Array.isArray(names)?names:[]) {
-      if(typeof name==='string' && name.trim() && !target.includes(name) && target.length<6)target.push(name);
-    }
-  };
-  const core=analysis?.core?.items || [];
-  add(base,core.slice(0,1));
-  add(base,analysis?.boots?.items);
-  add(base,core.slice(1));
-  if(!base.length)return [];
-
-  const byGames=rows=>(Array.isArray(rows)?rows:[]).filter(r=>Array.isArray(r?.items))
-    .slice().sort((a,b)=>(b.games||0)-(a.games||0));
-  const seen=new Set(), paths=[];
-  for(const fourth of byGames(analysis.fourth)) {
-    const featured=fourth.items.find(n=>typeof n==='string' && !base.includes(n));
-    if(!featured || seen.has(featured) || base.length>=6)continue;
-    seen.add(featured);
-    const items=base.slice();
-    add(items,[featured]);
-    let fifth=null, sixth=null;
-    for(const row of byGames(analysis.fifth)) {
-      if(row.items.some(n=>typeof n==='string' && !items.includes(n))) {
-        fifth=row;add(items,row.items);break;
-      }
-    }
-    if(items.length<6)for(const row of byGames(analysis.sixth)) {
-      if(row.items.some(n=>typeof n==='string' && !items.includes(n))) {
-        sixth=row;add(items,row.items);break;
-      }
-    }
-    paths.push({items,fourth,fifth,sixth});
-    if(paths.length>=Math.min(3,Math.max(1,maxPaths)))break;
+  const candidates=(Array.isArray(analysis?.cores) && analysis.cores.length
+    ? analysis.cores : analysis?.core ? [analysis.core] : [])
+    .filter(r=>Array.isArray(r?.items) && r.items.length>=2 && r.items.every(n=>typeof n==='string' && n.trim())
+      && Number.isInteger(r.games) && r.games>0)
+    .slice().sort((a,b)=>b.games-a.games);
+  const paths=[];
+  for(const core of candidates) {
+    const names=[...new Set(core.items)];
+    if(names.length<2)continue;
+    const distinct=paths.every(previous=>{
+      const original=previous.core.items;
+      // At least two different core purchases, not one late-item substitution.
+      const changed=names.filter(n=>!original.includes(n)).length;
+      return changed>=2;
+    });
+    if(!distinct)continue;
+    const items=[...names];
+    for(const boot of analysis?.boots?.items || [])if(typeof boot==='string' && !items.includes(boot))items.push(boot);
+    paths.push({items,core});
+    if(paths.length>=Math.max(1,Math.min(3,maxPaths)))break;
   }
-  return paths.length?paths:[{items:base,fourth:null,fifth:null,sixth:null}];
+  return paths;
 }
 
 export function completeProviderBuild(analysis) {
